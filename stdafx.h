@@ -1,0 +1,15 @@
+#pragma once
+//#include "stdafx.h"
+#include <vtkObject.h>
+#include <vtkObjectFactory.h>
+#include <vtkRenderer.h>
+#include <vtkSmartPointer.h>
+#include <vtkCamera.h>
+#include <vtkRenderWindow.h>
+#include <vtkRenderWindowInteractor.h>
+#include <vtkCubeSource.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkActor.h>
+#include <memory>
+#include <vtkInteractorStyleTrackballActor.h>
+#include <vtkCommand.h>
