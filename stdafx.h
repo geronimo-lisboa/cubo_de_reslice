@@ -13,3 +13,6 @@
 #include <memory>
 #include <vtkInteractorStyleTrackballActor.h>
 #include <vtkCommand.h>
+#include <vtkTransform.h>
+#include <vtkMatrix4x4.h>
+#include <array>

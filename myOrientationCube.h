@@ -7,6 +7,7 @@ class myOrientationCube : public vtkCommand{
 	vtkRenderer *owner;
 	myOrientationCube();
 	void CreateThings();
+	void MakeCameraFollowTranslation();
 public:
 	static myOrientationCube* New();
 	void SetOwner(vtkRenderer *ren);
