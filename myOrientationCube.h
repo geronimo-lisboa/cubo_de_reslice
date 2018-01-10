@@ -5,9 +5,11 @@ class myOrientationCube : public vtkCommand{
 	vtkSmartPointer<vtkPolyDataMapper> mapper;
 	vtkSmartPointer<vtkActor> actor;
 	vtkRenderer *owner;
+	vtkSmartPointer<vtkAxesActor> axes2;
 	myOrientationCube();
 	void CreateThings();
 	void MakeCameraFollowTranslation();
+	void MakeAxisFollowCube();
 public:
 	static myOrientationCube* New();
 	void SetOwner(vtkRenderer *ren);

@@ -16,3 +16,8 @@
 #include <vtkTransform.h>
 #include <vtkMatrix4x4.h>
 #include <array>
+#include <vtkProperty.h>
+#include <vtkAxesActor.h>
+#include <vtkTextProperty.h>
+#include <vtkCaptionActor2D.h>
+#include <vtkPropCollection.h>

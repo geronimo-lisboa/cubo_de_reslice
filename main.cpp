@@ -4,7 +4,7 @@
 int main(int, char *[])
 {
 	vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
-	//renderer->AddActor(cylinderActor);
+	renderer->GetActiveCamera()->ParallelProjectionOn();
 	renderer->SetBackground(0.1, 0.2, 0.4);
 	// Zoom in a little by accessing the camera and invoking its "Zoom" method.
 	renderer->ResetCamera();

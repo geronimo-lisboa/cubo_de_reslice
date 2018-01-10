@@ -23,6 +23,25 @@ void myOrientationCube::CreateThings() {
 	mapper->SetInputConnection(cubeSource->GetOutputPort());
 	actor = vtkSmartPointer<vtkActor>::New();
 	actor->SetMapper(mapper);
+	actor->GetProperty()->BackfaceCullingOff();
+	actor->GetProperty()->SetRepresentationToWireframe();
+	//-------
+	axes2 = vtkSmartPointer<vtkAxesActor>::New();
+	axes2->SetShaftTypeToCylinder();
+	axes2->SetXAxisLabelText("w");
+	axes2->SetYAxisLabelText("v");
+	axes2->SetZAxisLabelText("u");
+	axes2->SetTotalLength(1.0, 1.0, 1.0);
+	axes2->SetCylinderRadius(0.500 * axes2->GetCylinderRadius());
+	axes2->SetConeRadius(1.025 * axes2->GetConeRadius());
+	axes2->SetSphereRadius(1.500 * axes2->GetSphereRadius());
+	vtkTextProperty* tprop = axes2->GetXAxisCaptionActor2D()->GetCaptionTextProperty();
+	tprop->ItalicOn();
+	tprop->ShadowOn();
+	tprop->SetFontFamilyToTimes();
+	axes2->GetYAxisCaptionActor2D()->GetCaptionTextProperty()->ShallowCopy(tprop);
+	axes2->GetZAxisCaptionActor2D()->GetCaptionTextProperty()->ShallowCopy(tprop);
+
 }
 
 myOrientationCube::myOrientationCube() {
@@ -36,6 +55,7 @@ void myOrientationCube::SetOwner(vtkRenderer *ren) {
 	owner = ren;
 	CreateThings();
 	owner->AddActor(actor);
+	owner->AddActor(axes2);
 	owner->ResetCamera();
 	owner->AddObserver(vtkCommand::EndEvent, this);
 	owner->AddObserver(vtkCommand::StartEvent, this);
@@ -53,10 +73,21 @@ void myOrientationCube::MakeCameraFollowTranslation() {
 	std::array<double, 3> modifiedPos = objCenter + vecFromPosToFocus;
 	camera->SetFocalPoint(modifiedFocus.data());
 	camera->SetPosition(modifiedPos.data());
-	std::cout << objCenter[0] << "," << objCenter[1] << "," << objCenter[2] << std::endl;
+}
+
+void myOrientationCube::MakeAxisFollowCube() {
+	axes2->SetOrientation(actor->GetOrientation());
+	//vtkSmartPointer<vtkPropCollection> props = vtkSmartPointer<vtkPropCollection>::New();
+	//axes2->GetActors(props);
+	//std::cout << props->GetNumberOfItems() << std::endl;
+		
+	axes2->SetUserMatrix(actor->GetMatrix());
+	
+	std::cout << axes2->GetCenter()[0] << ", " << axes2->GetCenter()[1] << ", " << axes2->GetCenter()[2] << std::endl;
 }
 
 void myOrientationCube::Execute(vtkObject * caller, unsigned long ev, void * calldata)
 {
 	MakeCameraFollowTranslation();
+	MakeAxisFollowCube();
 }
