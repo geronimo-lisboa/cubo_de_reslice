@@ -36,3 +36,11 @@
 #include <itkOrientImageFilter.h>
 #include <vtkOpenGLRenderer.h>
 #include <vtkWin32OpenGLRenderWindow.h>
+#include <vtkImageData.h>
+#include <vtkImageMapToColors.h>
+#include <vtkImageSlabReslice.h>
+#include "boost/date_time/posix_time/posix_time.hpp" //include all types plus i/o
+#include <boost/lexical_cast.hpp>
+#include <vtkXMLImageDataWriter.h>
+#include <vtkMatrix4x4.h>
+#include <assert.h>

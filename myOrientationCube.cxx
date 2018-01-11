@@ -16,7 +16,6 @@ std::array<double, 3> operator-(const std::array<double, 3> v1, const std::array
 	return r;
 }
 
-
 void myOrientationCube::CreateThings() {
 	cubeSource = vtkSmartPointer<vtkCubeSource>::New();
 	mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
@@ -48,10 +47,13 @@ myOrientationCube::myOrientationCube() {
 	mapper = nullptr;
 	actor = nullptr;
 	owner = nullptr;
+	imageLayer = nullptr;
+	image = nullptr;
 }
 
-void myOrientationCube::SetOwner(vtkRenderer *ren) {
-	owner = ren;
+void myOrientationCube::SetRenderers(vtkRenderer* imageLayer, vtkRenderer* cubeLayer) {
+	owner = cubeLayer;
+	this->imageLayer = imageLayer;
 	CreateThings();
 	owner->AddActor(actor);
 	owner->AddActor(axes2);
@@ -60,6 +62,7 @@ void myOrientationCube::SetOwner(vtkRenderer *ren) {
 	owner->AddObserver(vtkCommand::StartEvent, this);
 	owner->AddObserver(vtkCommand::RenderEvent, this);
 }
+
 
 void myOrientationCube::MakeCameraFollowTranslation() {
 	vtkCamera *camera = owner->GetActiveCamera();
@@ -76,17 +79,56 @@ void myOrientationCube::MakeCameraFollowTranslation() {
 
 void myOrientationCube::MakeAxisFollowCube() {
 	axes2->SetOrientation(actor->GetOrientation());
-	//vtkSmartPointer<vtkPropCollection> props = vtkSmartPointer<vtkPropCollection>::New();
-	//axes2->GetActors(props);
-	//std::cout << props->GetNumberOfItems() << std::endl;
-		
 	axes2->SetUserMatrix(actor->GetMatrix());
-	
-	std::cout << axes2->GetCenter()[0] << ", " << axes2->GetCenter()[1] << ", " << axes2->GetCenter()[2] << std::endl;
+}
+
+void myOrientationCube::UpdateReslice() {
+	vtkSmartPointer<vtkImageSlabReslice> thickSlabReslice = vtkSmartPointer<vtkImageSlabReslice>::New();
+	thickSlabReslice->SetInputData(  image->GetOutput());
+	// Set the default color the minimum scalar value
+	double range[2];
+	vtkImageData::SafeDownCast(thickSlabReslice->GetInput())->GetScalarRange(range);
+	thickSlabReslice->SetBackgroundLevel(range[0]);
+	vtkSmartPointer<vtkImageMapToColors> ColorMap = vtkSmartPointer<vtkImageMapToColors>::New();
+	// Set the usual parameters.
+	ColorMap->SetInputConnection(thickSlabReslice->GetOutputPort());
+	thickSlabReslice->TransformInputSamplingOff();
+
+	vtkSmartPointer<vtkMatrix4x4> ResliceAxes = vtkSmartPointer<vtkMatrix4x4>::New();
+	thickSlabReslice->SetResliceAxes(actor->GetMatrix());
+	thickSlabReslice->SetOutputDimensionality(2);
+	//update
+	thickSlabReslice->Update();
+	vtkImageData* resultado = thickSlabReslice->GetOutput();
+	assert(resultado->GetExtent()[1] != -1);
+	//grava no disco
+	boost::posix_time::ptime current_date_microseconds = boost::posix_time::microsec_clock::local_time();
+	long milliseconds = current_date_microseconds.time_of_day().total_milliseconds();
+	std::string filename = "c:\\mprcubo\\dump\\" + boost::lexical_cast<std::string>(milliseconds) + ".vti";
+	vtkSmartPointer<vtkXMLImageDataWriter> debugsave = vtkSmartPointer<vtkXMLImageDataWriter>::New();
+	debugsave->SetFileName(filename.c_str());
+	debugsave->SetInputData(resultado);
+	debugsave->BreakOnError();
+	debugsave->Write();
+	long err = debugsave->GetErrorCode();
 }
 
 void myOrientationCube::Execute(vtkObject * caller, unsigned long ev, void * calldata)
 {
 	MakeCameraFollowTranslation();
 	MakeAxisFollowCube();
+	UpdateReslice();
+	cout << "Actor: pos[" << actor->GetCenter()[0] << ", " << actor->GetCenter()[1] << ", " << actor->GetCenter()[2] << "]" << endl;
+	cout << "Matrix:" << endl;
+	actor->GetMatrix()->Print(cout);
+}
+
+void myOrientationCube::SetImage(vtkSmartPointer<vtkImageImport> imgSrc) {
+	this->image = imgSrc;
+	assert(actor && axis2);
+	actor->SetPosition(image->GetOutput()->GetCenter());
+	MakeCameraFollowTranslation();
+	MakeAxisFollowCube();
+	
+
 }

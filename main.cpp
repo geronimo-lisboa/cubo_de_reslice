@@ -71,7 +71,8 @@ int main(int, char *[])
 	renderWindowInteractor->SetInteractorStyle(style);
 	// Create a cube.
 	vtkSmartPointer<myOrientationCube> cuboDeOrientacao = vtkSmartPointer<myOrientationCube>::New();
-	cuboDeOrientacao->SetOwner(rendererDaCamadaDoCubo);	
+	cuboDeOrientacao->SetRenderers(rendererDaCamadaDaImagem, rendererDaCamadaDoCubo);	
+	cuboDeOrientacao->SetImage(imagemImportadaPraVTK);
 	renderWindow->Render();
 	//A tela dummy
 	vtkSmartPointer<vtkRenderer> rendererDummy = vtkSmartPointer<vtkRenderer>::New();
