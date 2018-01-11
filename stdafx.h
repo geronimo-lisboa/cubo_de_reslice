@@ -1,5 +1,5 @@
 #pragma once
-//#include "stdafx.h"
+
 #include <vtkObject.h>
 #include <vtkObjectFactory.h>
 #include <vtkRenderer.h>
@@ -21,3 +21,16 @@
 #include <vtkTextProperty.h>
 #include <vtkCaptionActor2D.h>
 #include <vtkPropCollection.h>
+#include <vector>
+#include <string>
+#include <itkImage.h>
+#include <vtkImageImport.h>
+#include <itkCommand.h>
+#include <itkMetaDataDictionary.h>
+#include <itkMetaDataObject.h>
+#include <itkImageSeriesReader.h>
+#include <itkGDCMImageIO.h>
+#include <itkGDCMSeriesFileNames.h>
+#include <fstream>
+#include <itkMacro.h>
+
