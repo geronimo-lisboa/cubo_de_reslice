@@ -44,3 +44,6 @@
 #include <vtkXMLImageDataWriter.h>
 #include <vtkMatrix4x4.h>
 #include <assert.h>
+#include <vtkImageActor.h>
+#include <vtkImageProperty.h>
+#include <vtkImageMapper3d.h>

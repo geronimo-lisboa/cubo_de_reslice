@@ -40,6 +40,8 @@ void myOrientationCube::CreateThings() {
 	tprop->SetFontFamilyToTimes();
 	axes2->GetYAxisCaptionActor2D()->GetCaptionTextProperty()->ShallowCopy(tprop);
 	axes2->GetZAxisCaptionActor2D()->GetCaptionTextProperty()->ShallowCopy(tprop);
+
+	
 }
 
 myOrientationCube::myOrientationCube() {
@@ -49,6 +51,7 @@ myOrientationCube::myOrientationCube() {
 	owner = nullptr;
 	imageLayer = nullptr;
 	image = nullptr;
+	thickSlabReslice = nullptr;
 }
 
 void myOrientationCube::SetRenderers(vtkRenderer* imageLayer, vtkRenderer* cubeLayer) {
@@ -82,9 +85,22 @@ void myOrientationCube::MakeAxisFollowCube() {
 	axes2->SetUserMatrix(actor->GetMatrix());
 }
 
+void myOrientationCube::CreatePipeline() {
+	//instancia o filtro
+	thickSlabReslice = vtkSmartPointer<vtkImageSlabReslice>::New();
+	//agora instancia o actor do reslice
+	actorDaImagem = vtkSmartPointer<vtkImageActor>::New();
+	imageLayer->AddActor(actorDaImagem);
+	imageLayer->ResetCamera();
+	//liga tudo
+	actorDaImagem->GetMapper()->SetInputConnection(thickSlabReslice->GetOutputPort());
+}
+
 void myOrientationCube::UpdateReslice() {
-	vtkSmartPointer<vtkImageSlabReslice> thickSlabReslice = vtkSmartPointer<vtkImageSlabReslice>::New();
-	thickSlabReslice->SetInputData(  image->GetOutput());
+	if (!thickSlabReslice){
+		CreatePipeline();
+	}	
+	thickSlabReslice->SetInputData(image->GetOutput());
 	// Set the default color the minimum scalar value
 	double range[2];
 	vtkImageData::SafeDownCast(thickSlabReslice->GetInput())->GetScalarRange(range);
@@ -111,6 +127,8 @@ void myOrientationCube::UpdateReslice() {
 	debugsave->BreakOnError();
 	debugsave->Write();
 	long err = debugsave->GetErrorCode();
+	//Bota na tela
+	imageLayer->ResetCamera();
 }
 
 void myOrientationCube::Execute(vtkObject * caller, unsigned long ev, void * calldata)
@@ -125,7 +143,7 @@ void myOrientationCube::Execute(vtkObject * caller, unsigned long ev, void * cal
 
 void myOrientationCube::SetImage(vtkSmartPointer<vtkImageImport> imgSrc) {
 	this->image = imgSrc;
-	assert(actor && axis2);
+	assert(actor && axes2);
 	actor->SetPosition(image->GetOutput()->GetCenter());
 	MakeCameraFollowTranslation();
 	MakeAxisFollowCube();
