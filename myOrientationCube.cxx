@@ -41,7 +41,6 @@ void myOrientationCube::CreateThings() {
 	tprop->SetFontFamilyToTimes();
 	axes2->GetYAxisCaptionActor2D()->GetCaptionTextProperty()->ShallowCopy(tprop);
 	axes2->GetZAxisCaptionActor2D()->GetCaptionTextProperty()->ShallowCopy(tprop);
-
 }
 
 myOrientationCube::myOrientationCube() {

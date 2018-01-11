@@ -34,24 +34,44 @@ int main(int, char *[])
 	const std::vector<std::string> lst = GetList(txtFile);
 	std::map<std::string, std::string> metadataDaImagem;
 	itk::Image<short,3>::Pointer imagemOriginal = LoadVolume(metadataDaImagem, lst, prog);
-	///fim da Carga da imagem
-	vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
-	renderer->GetActiveCamera()->ParallelProjectionOn();
-	renderer->SetBackground(0.1, 0.2, 0.4);
-	// Zoom in a little by accessing the camera and invoking its "Zoom" method.
-	renderer->ResetCamera();
-	renderer->GetActiveCamera()->Zoom(1.5);
-	vtkSmartPointer<vtkRenderWindow> renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
-	renderWindow->SetSize(200, 200);
-	renderWindow->AddRenderer(renderer);
+	///Reorienta a imagem
+	itk::OrientImageFilter<itk::Image<short, 3>, itk::Image<short, 3>>::Pointer orienter = itk::OrientImageFilter<itk::Image<short, 3>, itk::Image<short, 3>>::New();
+	orienter->AddObserver(itk::ProgressEvent(), prog);
+	orienter->UseImageDirectionOn();
+	orienter->SetDesiredCoordinateOrientation(itk::SpatialOrientation::ITK_COORDINATE_ORIENTATION_RIP);
+	orienter->SetInput(imagemOriginal);
+	orienter->Update();
+	imagemOriginal = orienter->GetOutput();
+	///fim da Carga da imagem - aqui a imagem já está carregada e orientada em uma orientação padrão.
+	vtkSmartPointer<vtkImageImport> imagemImportadaPraVTK = CreateVTKImage(imagemOriginal);//importa a imagem da itk pra vtk.
+	//Cria a tela do cubo
+	vtkSmartPointer<vtkOpenGLRenderer> rendererDaCamadaDoCubo = vtkSmartPointer<vtkOpenGLRenderer>::New();
+	rendererDaCamadaDoCubo->GetActiveCamera()->ParallelProjectionOn();
+	rendererDaCamadaDoCubo->SetBackground(0.1, 0.2, 0.4);
+	rendererDaCamadaDoCubo->ResetCamera();
+	rendererDaCamadaDoCubo->GetActiveCamera()->Zoom(1.5);
+	rendererDaCamadaDoCubo->SetLayer(1);
+
+	vtkSmartPointer<vtkOpenGLRenderer> rendererDaCamadaDaImagem = vtkSmartPointer<vtkOpenGLRenderer>::New();
+	rendererDaCamadaDaImagem->GetActiveCamera()->ParallelProjectionOn();
+	rendererDaCamadaDaImagem->SetBackground(0.1, 0.2, 0.4);
+	rendererDaCamadaDaImagem->ResetCamera();
+	rendererDaCamadaDaImagem->GetActiveCamera()->Zoom(1.5);
+	rendererDaCamadaDaImagem->SetLayer(0);
+	rendererDaCamadaDaImagem->SetBackground(1, 0, 0);
+
+	vtkSmartPointer<vtkWin32OpenGLRenderWindow> renderWindow = vtkSmartPointer<vtkWin32OpenGLRenderWindow>::New();
+	renderWindow->SetNumberOfLayers(2);
+	renderWindow->SetSize(500, 500);
+	renderWindow->AddRenderer(rendererDaCamadaDaImagem);
+	renderWindow->AddRenderer(rendererDaCamadaDoCubo);
 	vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
 	renderWindowInteractor->SetRenderWindow(renderWindow);
 	vtkSmartPointer<vtkInteractorStyleTrackballActor> style = vtkSmartPointer<vtkInteractorStyleTrackballActor>::New();
 	renderWindowInteractor->SetInteractorStyle(style);
 	// Create a cube.
 	vtkSmartPointer<myOrientationCube> cuboDeOrientacao = vtkSmartPointer<myOrientationCube>::New();
-	cuboDeOrientacao->SetOwner(renderer);
-	
+	cuboDeOrientacao->SetOwner(rendererDaCamadaDoCubo);	
 	renderWindow->Render();
 	//A tela dummy
 	vtkSmartPointer<vtkRenderer> rendererDummy = vtkSmartPointer<vtkRenderer>::New();

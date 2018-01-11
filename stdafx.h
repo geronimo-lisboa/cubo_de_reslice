@@ -33,4 +33,6 @@
 #include <itkGDCMSeriesFileNames.h>
 #include <fstream>
 #include <itkMacro.h>
-
+#include <itkOrientImageFilter.h>
+#include <vtkOpenGLRenderer.h>
+#include <vtkWin32OpenGLRenderWindow.h>
