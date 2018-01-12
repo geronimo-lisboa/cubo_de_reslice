@@ -1,20 +1,8 @@
 #include"stdafx.h"
 #include "myOrientationCube.h"
+#include "utils.h"
 vtkStandardNewMacro(myOrientationCube);
-std::array<double, 3> operator+(const std::array<double, 3> v1, const std::array<double, 3> v2) {
-	std::array<double, 3> r;
-	r[0] = v1[0] + v2[0];
-	r[1] = v1[1] + v2[1];
-	r[2] = v1[2] + v2[2];
-	return r;
-}
-std::array<double, 3> operator-(const std::array<double, 3> v1, const std::array<double, 3> v2) {
-	std::array<double, 3> r;
-	r[0] = v1[0] - v2[0];
-	r[1] = v1[1] - v2[1];
-	r[2] = v1[2] - v2[2];
-	return r;
-}
+
 
 void myOrientationCube::CreateThings() {
 	cubeSource = vtkSmartPointer<vtkCubeSource>::New();
@@ -87,16 +75,8 @@ void myOrientationCube::MakeAxisFollowCube() {
 }
 
 void myOrientationCube::CreatePipeline() {
-	//instancia o filtro
+	////instancia o filtro
 	thickSlabReslice = vtkSmartPointer<vtkImageSlabReslice>::New();
-	//agora instancia o actor do reslice
-	actorDaImagem = vtkSmartPointer<vtkImageActor>::New();
-	imageLayer->AddActor(actorDaImagem);
-	imageLayer->GetActiveCamera()->ParallelProjectionOn();
-	imageLayer->ResetCamera();
-	
-	//liga tudo
-	actorDaImagem->GetMapper()->SetInputConnection(thickSlabReslice->GetOutputPort());
 }
 
 void myOrientationCube::UpdateReslice() {
@@ -116,6 +96,7 @@ void myOrientationCube::UpdateReslice() {
 	vtkSmartPointer<vtkMatrix4x4> ResliceAxes = vtkSmartPointer<vtkMatrix4x4>::New();
 	thickSlabReslice->SetResliceAxes(actor->GetMatrix());
 	thickSlabReslice->SetOutputDimensionality(2);
+	thickSlabReslice->AutoCropOutputOff();
 	//update
 	thickSlabReslice->Update();
 	vtkImageData* resultado = thickSlabReslice->GetOutput();
@@ -130,7 +111,19 @@ void myOrientationCube::UpdateReslice() {
 	debugsave->BreakOnError();
 	debugsave->Write();
 	long err = debugsave->GetErrorCode();
-	*///Bota na tela
+	*/
+	////Bota na tela
+	////agora instancia o actor do reslice
+	imageLayer->RemoveActor(actorDaImagem);
+	actorDaImagem = vtkSmartPointer<vtkImageActor>::New();
+	actorDaImagem->GetProperty()->SetColorWindow(500);
+	actorDaImagem->GetProperty()->SetColorLevel(1000);
+	imageLayer->AddActor(actorDaImagem);
+	imageLayer->GetActiveCamera()->ParallelProjectionOn();
+	imageLayer->ResetCamera();
+	////liga tudo
+	actorDaImagem->GetMapper()->SetInputConnection(thickSlabReslice->GetOutputPort());
+
 	imageLayer->ResetCamera();
 }
 

@@ -1,4 +1,5 @@
 #pragma once
+#define _SCL_SECURE_NO_WARNINGS
 
 #include <vtkObject.h>
 #include <vtkObjectFactory.h>
@@ -47,3 +48,17 @@
 #include <vtkImageActor.h>
 #include <vtkImageProperty.h>
 #include <vtkImageMapper3d.h>
+#include <vtkObjectFactory.h>
+#include <vtkLightsPass.h>
+#include <vtkDefaultPass.h>
+#include <vtkRenderPassCollection.h>
+#include <vtkSequencePass.h>
+#include <vtkCameraPass.h>
+#include <vtkRenderState.h>
+#include <SDL2\SDL_ttf.h>
+#undef main
+#include <SDL2/SDL.h>
+#undef main
+#include <vtkGeneralTransform.h>
+#include <vtkPlane.h>
+#include <vtkPlaneSource.h>

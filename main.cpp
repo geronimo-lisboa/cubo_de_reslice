@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "myOrientationCube.h"
 #include "loadVolume.h"
+#include "myOrientationCubeViewer.h"
 class ObserveLoadProgressCommand : public itk::Command
 {
 public:
@@ -30,7 +31,7 @@ int main(int, char *[])
 {
 	///Carga da imagem
 	ObserveLoadProgressCommand::Pointer prog = ObserveLoadProgressCommand::New();
-	const std::string txtFile = "C:\\meus dicoms\\abdomem-feet-first";//"C:\\meus dicoms\\Marching Man";
+	const std::string txtFile = "C:\\meus dicoms\\Marching Man";//"C:\\meus dicoms\\abdomem-feet-first";//"C:\\meus dicoms\\Marching Man";
 	const std::vector<std::string> lst = GetList(txtFile);
 	std::map<std::string, std::string> metadataDaImagem;
 	itk::Image<short,3>::Pointer imagemOriginal = LoadVolume(metadataDaImagem, lst, prog);
@@ -44,6 +45,15 @@ int main(int, char *[])
 	imagemOriginal = orienter->GetOutput();
 	///fim da Carga da imagem - aqui a imagem já está carregada e orientada em uma orientação padrão.
 	vtkSmartPointer<vtkImageImport> imagemImportadaPraVTK = CreateVTKImage(imagemOriginal);//importa a imagem da itk pra vtk.
+	imagemImportadaPraVTK->Update();
+
+	//Testes com o plane source
+	double szX = (imagemImportadaPraVTK->GetOutput()->GetSpacing()[0] * imagemImportadaPraVTK->GetOutput()->GetDimensions()[0] / 2);
+	double szY = (imagemImportadaPraVTK->GetOutput()->GetSpacing()[1] * imagemImportadaPraVTK->GetOutput()->GetDimensions()[1] / 2);
+	double szZ = (imagemImportadaPraVTK->GetOutput()->GetSpacing()[2] * imagemImportadaPraVTK->GetOutput()->GetDimensions()[2] / 2);
+	vtkSmartPointer<vtkPlaneSource> ps = vtkSmartPointer<vtkPlaneSource>::New();
+	ps->SetCenter(imagemImportadaPraVTK->GetOutput()->GetCenter());
+	
 	//Cria a tela do cubo
 	vtkSmartPointer<vtkOpenGLRenderer> rendererDaCamadaDoCubo = vtkSmartPointer<vtkOpenGLRenderer>::New();
 	rendererDaCamadaDoCubo->GetActiveCamera()->ParallelProjectionOn();
@@ -70,6 +80,11 @@ int main(int, char *[])
 	vtkSmartPointer<vtkInteractorStyleTrackballActor> style = vtkSmartPointer<vtkInteractorStyleTrackballActor>::New();
 	renderWindowInteractor->SetInteractorStyle(style);
 	// Create a cube.
+	//vtkSmartPointer<myOrientationCubeViewer> myViewer = vtkSmartPointer<myOrientationCubeViewer>::New();
+	//myViewer->DebugOn();
+	//myViewer->SetRenderers(rendererDaCamadaDaImagem, rendererDaCamadaDoCubo);	
+	//myViewer->SetImage(imagemImportadaPraVTK);
+	//myViewer->Build();
 	vtkSmartPointer<myOrientationCube> cuboDeOrientacao = vtkSmartPointer<myOrientationCube>::New();
 	cuboDeOrientacao->SetRenderers(rendererDaCamadaDaImagem, rendererDaCamadaDoCubo);	
 	cuboDeOrientacao->SetImage(imagemImportadaPraVTK);
