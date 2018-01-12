@@ -30,7 +30,7 @@ int main(int, char *[])
 {
 	///Carga da imagem
 	ObserveLoadProgressCommand::Pointer prog = ObserveLoadProgressCommand::New();
-	const std::string txtFile = "C:\\meus dicoms\\Marching Man";
+	const std::string txtFile = "C:\\meus dicoms\\abdomem-feet-first";//"C:\\meus dicoms\\Marching Man";
 	const std::vector<std::string> lst = GetList(txtFile);
 	std::map<std::string, std::string> metadataDaImagem;
 	itk::Image<short,3>::Pointer imagemOriginal = LoadVolume(metadataDaImagem, lst, prog);

@@ -24,6 +24,7 @@ void myOrientationCube::CreateThings() {
 	actor->SetMapper(mapper);
 	actor->GetProperty()->BackfaceCullingOff();
 	actor->GetProperty()->SetRepresentationToWireframe();
+	actor->GetProperty()->SetColor(1, 0, 0);
 	//-------
 	axes2 = vtkSmartPointer<vtkAxesActor>::New();
 	axes2->SetShaftTypeToCylinder();
@@ -91,7 +92,9 @@ void myOrientationCube::CreatePipeline() {
 	//agora instancia o actor do reslice
 	actorDaImagem = vtkSmartPointer<vtkImageActor>::New();
 	imageLayer->AddActor(actorDaImagem);
+	imageLayer->GetActiveCamera()->ParallelProjectionOn();
 	imageLayer->ResetCamera();
+	
 	//liga tudo
 	actorDaImagem->GetMapper()->SetInputConnection(thickSlabReslice->GetOutputPort());
 }
@@ -118,7 +121,7 @@ void myOrientationCube::UpdateReslice() {
 	vtkImageData* resultado = thickSlabReslice->GetOutput();
 	assert(resultado->GetExtent()[1] != -1);
 	//grava no disco
-	boost::posix_time::ptime current_date_microseconds = boost::posix_time::microsec_clock::local_time();
+	/*boost::posix_time::ptime current_date_microseconds = boost::posix_time::microsec_clock::local_time();
 	long milliseconds = current_date_microseconds.time_of_day().total_milliseconds();
 	std::string filename = "c:\\mprcubo\\dump\\" + boost::lexical_cast<std::string>(milliseconds) + ".vti";
 	vtkSmartPointer<vtkXMLImageDataWriter> debugsave = vtkSmartPointer<vtkXMLImageDataWriter>::New();
@@ -127,7 +130,7 @@ void myOrientationCube::UpdateReslice() {
 	debugsave->BreakOnError();
 	debugsave->Write();
 	long err = debugsave->GetErrorCode();
-	//Bota na tela
+	*///Bota na tela
 	imageLayer->ResetCamera();
 }
 
