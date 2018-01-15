@@ -94,6 +94,7 @@ void myOrientationCube::UpdateReslice() {
 	thickSlabReslice->TransformInputSamplingOff();
 
 	vtkSmartPointer<vtkMatrix4x4> ResliceAxes = vtkSmartPointer<vtkMatrix4x4>::New();
+	thickSlabReslice->SetOutputSpacing(1, 1, 1);
 	thickSlabReslice->SetResliceAxes(actor->GetMatrix());
 	thickSlabReslice->SetOutputDimensionality(2);
 	thickSlabReslice->AutoCropOutputOff();
@@ -102,7 +103,7 @@ void myOrientationCube::UpdateReslice() {
 	vtkImageData* resultado = thickSlabReslice->GetOutput();
 	assert(resultado->GetExtent()[1] != -1);
 	//grava no disco
-	/*boost::posix_time::ptime current_date_microseconds = boost::posix_time::microsec_clock::local_time();
+	boost::posix_time::ptime current_date_microseconds = boost::posix_time::microsec_clock::local_time();
 	long milliseconds = current_date_microseconds.time_of_day().total_milliseconds();
 	std::string filename = "c:\\mprcubo\\dump\\" + boost::lexical_cast<std::string>(milliseconds) + ".vti";
 	vtkSmartPointer<vtkXMLImageDataWriter> debugsave = vtkSmartPointer<vtkXMLImageDataWriter>::New();
@@ -111,7 +112,7 @@ void myOrientationCube::UpdateReslice() {
 	debugsave->BreakOnError();
 	debugsave->Write();
 	long err = debugsave->GetErrorCode();
-	*/
+	
 	////Bota na tela
 	////agora instancia o actor do reslice
 	imageLayer->RemoveActor(actorDaImagem);
