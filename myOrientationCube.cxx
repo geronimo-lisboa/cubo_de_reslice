@@ -12,7 +12,7 @@ void myOrientationCube::CreateThings() {
 	actor->SetMapper(mapper);
 	actor->GetProperty()->BackfaceCullingOff();
 	actor->GetProperty()->SetRepresentationToWireframe();
-	actor->GetProperty()->SetColor(1, 0, 0);
+	actor->GetProperty()->SetColor(1, 1, 0);
 	//-------
 	axes2 = vtkSmartPointer<vtkAxesActor>::New();
 	axes2->SetShaftTypeToCylinder();
@@ -41,6 +41,8 @@ myOrientationCube::myOrientationCube() {
 	imageLayer = nullptr;
 	image = nullptr;
 	thickSlabReslice = nullptr;
+	testePlano = nullptr;
+	planeGenerator = std::make_shared<myClippedPlaneGenerator>();
 }
 
 void myOrientationCube::SetRenderers(vtkRenderer* imageLayer, vtkRenderer* cubeLayer) {
@@ -80,6 +82,25 @@ void myOrientationCube::CreatePipeline() {
 }
 
 void myOrientationCube::UpdateReslice() {
+
+	double extent[] = {
+		(image->GetOutput()->GetExtent()[0] * image->GetOutput()->GetSpacing()[0]) + image->GetOutput()->GetOrigin()[0],
+		(image->GetOutput()->GetExtent()[1] * image->GetOutput()->GetSpacing()[0]) + image->GetOutput()->GetOrigin()[0],
+		(image->GetOutput()->GetExtent()[2] * image->GetOutput()->GetSpacing()[1]) + image->GetOutput()->GetOrigin()[1],
+		(image->GetOutput()->GetExtent()[3] * image->GetOutput()->GetSpacing()[1]) + image->GetOutput()->GetOrigin()[1],
+		(image->GetOutput()->GetExtent()[4] * image->GetOutput()->GetSpacing()[2]) + image->GetOutput()->GetOrigin()[2],
+		(image->GetOutput()->GetExtent()[5] * image->GetOutput()->GetSpacing()[2]) + image->GetOutput()->GetOrigin()[2],
+	};
+	double vec[] = {
+		actor->GetMatrix()->Element[0][0],
+		actor->GetMatrix()->Element[1][0],
+		actor->GetMatrix()->Element[2][0]
+	};
+	planeGenerator->SetProperties(extent, vec);
+	vtkPolyData* pd = planeGenerator->GetOutput();
+	std::cout << "Bounds : " << pd->GetBounds()[0] << ", " << pd->GetBounds()[1] << ", " << pd->GetBounds()[2] << ", " << pd->GetBounds()[3] << ", " << pd->GetBounds()[4] << ", " << pd->GetBounds()[5] << std::endl;
+	std::cout << "vector : " << actor->GetMatrix()->Element[0][2] << ", " << actor->GetMatrix()->Element[1][2] << ", " << actor->GetMatrix()->Element[2][2] << std::endl;
+
 	if (!thickSlabReslice){
 		CreatePipeline();
 	}	
@@ -94,6 +115,7 @@ void myOrientationCube::UpdateReslice() {
 	thickSlabReslice->TransformInputSamplingOff();
 
 	vtkSmartPointer<vtkMatrix4x4> ResliceAxes = vtkSmartPointer<vtkMatrix4x4>::New();
+	//thickSlabReslice->SetOutputExtent(b[0], b[1], b[2], b[3], b[4], b[5]);
 	thickSlabReslice->SetOutputSpacing(1, 1, 1);
 	thickSlabReslice->SetResliceAxes(actor->GetMatrix());
 	thickSlabReslice->SetOutputDimensionality(2);
@@ -102,30 +124,39 @@ void myOrientationCube::UpdateReslice() {
 	thickSlabReslice->Update();
 	vtkImageData* resultado = thickSlabReslice->GetOutput();
 	assert(resultado->GetExtent()[1] != -1);
+	////plano de teste na tela
+	vtkSmartPointer<vtkPolyDataMapper> tMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+	tMapper->SetInputData(pd);
+	if (testePlano != nullptr)
+		imageLayer->RemoveActor(testePlano);
+	testePlano = vtkSmartPointer<vtkActor>::New();
+	testePlano->SetMapper(tMapper);
+	imageLayer->AddActor(testePlano);
 	//grava no disco
-	boost::posix_time::ptime current_date_microseconds = boost::posix_time::microsec_clock::local_time();
-	long milliseconds = current_date_microseconds.time_of_day().total_milliseconds();
-	std::string filename = "c:\\mprcubo\\dump\\" + boost::lexical_cast<std::string>(milliseconds) + ".vti";
-	vtkSmartPointer<vtkXMLImageDataWriter> debugsave = vtkSmartPointer<vtkXMLImageDataWriter>::New();
-	debugsave->SetFileName(filename.c_str());
-	debugsave->SetInputData(resultado);
-	debugsave->BreakOnError();
-	debugsave->Write();
-	long err = debugsave->GetErrorCode();
-	
-	////Bota na tela
-	////agora instancia o actor do reslice
-	imageLayer->RemoveActor(actorDaImagem);
-	actorDaImagem = vtkSmartPointer<vtkImageActor>::New();
-	actorDaImagem->GetProperty()->SetColorWindow(500);
-	actorDaImagem->GetProperty()->SetColorLevel(1000);
-	imageLayer->AddActor(actorDaImagem);
-	imageLayer->GetActiveCamera()->ParallelProjectionOn();
-	imageLayer->ResetCamera();
-	////liga tudo
-	actorDaImagem->GetMapper()->SetInputConnection(thickSlabReslice->GetOutputPort());
+	//boost::posix_time::ptime current_date_microseconds = boost::posix_time::microsec_clock::local_time();
+	//long milliseconds = current_date_microseconds.time_of_day().total_milliseconds();
+	//std::string filename = "c:\\mprcubo\\dump\\" + boost::lexical_cast<std::string>(milliseconds) + ".vti";
+	//vtkSmartPointer<vtkXMLImageDataWriter> debugsave = vtkSmartPointer<vtkXMLImageDataWriter>::New();
+	//debugsave->SetFileName(filename.c_str());
+	//debugsave->SetInputData(resultado);
+	//debugsave->BreakOnError();
+	//debugsave->Write();
+	//long err = debugsave->GetErrorCode();
+////	//Bota na tela
+//	//agora instancia o actor do reslice
+//	imageLayer->RemoveActor(actorDaImagem);
+//	actorDaImagem = vtkSmartPointer<vtkImageActor>::New();
+//	actorDaImagem->GetProperty()->SetColorWindow(1000);
+//	actorDaImagem->GetProperty()->SetColorLevel(100);
+//	imageLayer->AddActor(actorDaImagem);
+//	imageLayer->GetActiveCamera()->ParallelProjectionOn();
+//	imageLayer->ResetCamera();
+//	//liga tudo
+//	actorDaImagem->GetMapper()->SetInputConnection(thickSlabReslice->GetOutputPort());
 
 	imageLayer->ResetCamera();
+	
+
 }
 
 void myOrientationCube::Execute(vtkObject * caller, unsigned long ev, void * calldata)
@@ -133,9 +164,9 @@ void myOrientationCube::Execute(vtkObject * caller, unsigned long ev, void * cal
 	MakeCameraFollowTranslation();
 	MakeAxisFollowCube();
 	UpdateReslice();
-	cout << "Actor: pos[" << actor->GetCenter()[0] << ", " << actor->GetCenter()[1] << ", " << actor->GetCenter()[2] << "]" << endl;
-	cout << "Matrix:" << endl;
-	actor->GetMatrix()->Print(cout);
+	//cout << "Actor: pos[" << actor->GetCenter()[0] << ", " << actor->GetCenter()[1] << ", " << actor->GetCenter()[2] << "]" << endl;
+	//cout << "Matrix:" << endl;
+	//actor->GetMatrix()->Print(cout);
 }
 
 void myOrientationCube::SetImage(vtkSmartPointer<vtkImageImport> imgSrc) {

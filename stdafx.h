@@ -62,3 +62,9 @@
 #include <vtkGeneralTransform.h>
 #include <vtkPlane.h>
 #include <vtkPlaneSource.h>
+
+#include <vtkPlane.h>
+#include <vtkClipPolyData.h>
+#include <vtkAlgorithmOutput.h>
+#include <vtkPolyData.h>
+
