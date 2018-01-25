@@ -5,8 +5,8 @@ set (DLL_BUILD FALSE)
 project( mprcubo )
 #Seta os paths da VTK, ITK e SDL2
 set(ITK_DIR "C:/itk_nova/ITK_build")
-#set(VTK_DIR "C:/VTK-7.0.0-build")
-set(VTK_DIR "C:/VTK-7.0.0-build-opengl1")
+set(VTK_DIR "C:/VTK-7.0.0-build")
+#set(VTK_DIR "C:/VTK-7.0.0-build-opengl1")
 # Find ITK.
 find_package(ITK REQUIRED)
 include(${ITK_USE_FILE})

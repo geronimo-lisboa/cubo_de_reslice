@@ -18,12 +18,20 @@ std::array<double, 3> operator-(const std::array<double, 3> v1, const std::array
 
 void myOrientationCube::CreateThings() {
 	cubeSource = vtkSmartPointer<vtkCubeSource>::New();
+	cubeSource->SetXLength(100);
+	cubeSource->SetYLength(100);
+	cubeSource->SetZLength(100);
 	mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
 	mapper->SetInputConnection(cubeSource->GetOutputPort());
 	actor = vtkSmartPointer<vtkActor>::New();
 	actor->SetMapper(mapper);
 	actor->GetProperty()->BackfaceCullingOff();
 	actor->GetProperty()->SetRepresentationToWireframe();
+	actor->GetProperty()->SetColor(0, 1, 0);
+	actor->GetProperty()->LightingOff();
+	actor->GetProperty()->BackfaceCullingOff();
+	actor->GetProperty()->SetLineWidth(2);
+	
 	//-------
 	axes2 = vtkSmartPointer<vtkAxesActor>::New();
 	axes2->SetShaftTypeToCylinder();
