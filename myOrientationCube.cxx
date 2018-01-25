@@ -60,6 +60,9 @@ myOrientationCube::myOrientationCube() {
 	imageLayer = nullptr;
 	image = nullptr;
 	thickSlabReslice = nullptr;
+	SetSlabThickness(1.0);
+	SetInterpolacao(Linear);
+	SetTipoDeFuncao(Composite);
 }
 
 void myOrientationCube::SetRenderers(vtkRenderer* imageLayer, vtkRenderer* cubeLayer) {
@@ -102,6 +105,7 @@ void myOrientationCube::CreatePipeline() {
 	imageLayer->ResetCamera();
 	//liga tudo
 	actorDaImagem->GetMapper()->SetInputConnection(thickSlabReslice->GetOutputPort());
+	
 }
 
 void myOrientationCube::UpdateReslice() {
@@ -121,22 +125,60 @@ void myOrientationCube::UpdateReslice() {
 	vtkSmartPointer<vtkMatrix4x4> ResliceAxes = vtkSmartPointer<vtkMatrix4x4>::New();
 	thickSlabReslice->SetResliceAxes(actor->GetMatrix());
 	thickSlabReslice->SetOutputDimensionality(2);
+	switch (tipoInterpolacao) {
+	case NearestNeighbour:
+		thickSlabReslice->SetInterpolationModeToNearestNeighbor();
+		break;
+	case Linear:
+		thickSlabReslice->SetInterpolationModeToLinear();
+		break;
+	case Cubic:
+		thickSlabReslice->SetInterpolationModeToCubic();
+		break;
+	}
+	switch (tipoFuncao) {
+	case MIP:
+		thickSlabReslice->SetBlendModeToMax();
+		break;
+	case MinP:
+		thickSlabReslice->SetBlendModeToMin();
+		break;
+	case Composite:
+		thickSlabReslice->SetBlendModeToMean();
+		break;
+	}
+	thickSlabReslice->SetSlabThickness(thickness);
+	std::cout << thickSlabReslice->GetInterpolationModeAsString() << std::endl;
+	//////o foco da dengue é aqui
+	thickSlabReslice->AutoCropOutputOn(); //O PROBLEMA É AQUI. É isso aqui que resolve o bug do tamanho do reslice mas cria o bug do translate e quebra o zoom via aumento/redução do cubo
+	thickSlabReslice->SetResliceAxesOrigin(actor->GetCenter()); //OK, MAS NÃO BASTA PRO BUG DO RESLICE
+	thickSlabReslice->SetOutputOriginToDefault();//OK , MAS NÃO BASTA PRO BUG DO RESLICE
+	//thickSlabReslice->SetUpdateExtentToWholeExtent(); //OK, MAS NÃO BASTA PRO BUG DO RESLICE
+	thickSlabReslice->SetOutputExtentToDefault();//OK, MAS NÃO BASTA PRO BUG DO RESLICE
+	//////fim do foco da dengue
 	//update
 	thickSlabReslice->Update();
 	vtkImageData* resultado = thickSlabReslice->GetOutput();
 	assert(resultado->GetExtent()[1] != -1);
 	//grava no disco
-	boost::posix_time::ptime current_date_microseconds = boost::posix_time::microsec_clock::local_time();
-	long milliseconds = current_date_microseconds.time_of_day().total_milliseconds();
-	std::string filename = "c:\\mprcubo\\dump\\" + boost::lexical_cast<std::string>(milliseconds) + ".vti";
-	vtkSmartPointer<vtkXMLImageDataWriter> debugsave = vtkSmartPointer<vtkXMLImageDataWriter>::New();
-	debugsave->SetFileName(filename.c_str());
-	debugsave->SetInputData(resultado);
-	debugsave->BreakOnError();
-	debugsave->Write();
-	long err = debugsave->GetErrorCode();
+	//boost::posix_time::ptime current_date_microseconds = boost::posix_time::microsec_clock::local_time();
+	//long milliseconds = current_date_microseconds.time_of_day().total_milliseconds();
+	//std::string filename = "c:\\mprcubo\\dump\\" + boost::lexical_cast<std::string>(milliseconds) + ".vti";
+	//vtkSmartPointer<vtkXMLImageDataWriter> debugsave = vtkSmartPointer<vtkXMLImageDataWriter>::New();
+	//debugsave->SetFileName(filename.c_str());
+	//debugsave->SetInputData(resultado);
+	//debugsave->BreakOnError();
+	//debugsave->Write();
+	//long err = debugsave->GetErrorCode();
 	//Bota na tela
-	imageLayer->ResetCamera();
+	static bool alredyReset;
+	static bool alredyZoomed;
+	if(!alredyReset)
+		imageLayer->ResetCamera();
+	alredyReset = true;
+	if(!alredyZoomed)
+		imageLayer->GetActiveCamera()->Zoom(2);
+	alredyZoomed = true;
 }
 
 void myOrientationCube::Execute(vtkObject * caller, unsigned long ev, void * calldata)
@@ -157,4 +199,19 @@ void myOrientationCube::SetImage(vtkSmartPointer<vtkImageImport> imgSrc) {
 	MakeAxisFollowCube();
 	
 
+}
+
+void myOrientationCube::SetSlabThickness(double mm)
+{
+	thickness = mm;
+}
+
+void myOrientationCube::SetInterpolacao(Interpolacao i)
+{
+	tipoInterpolacao = i;
+}
+
+void myOrientationCube::SetTipoDeFuncao(Funcao i)
+{
+	tipoFuncao = i;
 }
