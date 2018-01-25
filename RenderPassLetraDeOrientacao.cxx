@@ -10,7 +10,7 @@ myLetraRenderPass::myLetraRenderPass() {
 	if (TTF_Init() == -1) {
 		BOOST_THROW_EXCEPTION(std::exception(SDL_GetError()));
 	}
-	font = TTF_OpenFont("C:\\Windows\\Fonts\\arial.ttf", 12);
+	font = TTF_OpenFont("C:\\Windows\\Fonts\\arial.ttf", 14);
 	if (!font) {
 		BOOST_THROW_EXCEPTION(std::exception(TTF_GetError()));
 	}
@@ -24,6 +24,10 @@ myLetraRenderPass::myLetraRenderPass() {
 	passes->AddItem(defaultPass);
 	sequencePass->SetPasses(passes);
 	cameraPass->SetDelegatePass(sequencePass);
+	letraBaixo = "xxx";
+	letraCima = "yyy";
+	letraEsquerda = "zzz";
+	letraDireita = "www";
 }
 
 myLetraRenderPass::~myLetraRenderPass() {
@@ -33,10 +37,77 @@ myLetraRenderPass::~myLetraRenderPass() {
 	TTF_Quit();
 }
 
-void myLetraRenderPass::Calculate(vtkRenderer *ren) {
-	double *_cameraOrientation;
+void myLetraRenderPass::Calculate(std::array<double, 3> u, std::array<double, 3> v, vtkRenderer* ren) {
+	std::array<double, 3> zero = { {0,0,0} };
+	//Os planos
+	vtkSmartPointer<vtkPlane> planoEsquerdo = vtkSmartPointer<vtkPlane>::New();
+	planoEsquerdo->SetOrigin(-0.5, 0, 0);
+	planoEsquerdo->SetNormal(1, 0, 0);
+
+	vtkSmartPointer<vtkPlane> planoDireito = vtkSmartPointer<vtkPlane>::New();
+	planoDireito->SetOrigin(0.5, 0, 0);
+	planoDireito->SetNormal(-1, 0, 0);
+
+	vtkSmartPointer<vtkPlane> planoAnterior = vtkSmartPointer<vtkPlane>::New();
+	planoAnterior->SetOrigin(0, 0, -0.5);
+	planoAnterior->SetNormal(0, 0, 1);
+
+	vtkSmartPointer<vtkPlane> planoPosterior = vtkSmartPointer<vtkPlane>::New();
+	planoPosterior->SetOrigin(0, 0, 0.5);
+	planoPosterior->SetNormal(0, 0, -1);
+	
+	vtkSmartPointer<vtkPlane> planoCabeca = vtkSmartPointer<vtkPlane>::New();
+	planoCabeca->SetOrigin(0, -0.5, 0);
+	planoCabeca->SetNormal(0, 1, 0 );
+
+	vtkSmartPointer<vtkPlane> planoPe = vtkSmartPointer<vtkPlane>::New();
+	planoPe->SetOrigin(0, 0.5, 0);
+	planoPe->SetNormal(0, -1, 0);
+
+	//O teste de interceptação dos vetores;
+	double p;
+	double x[3];
+	//Teste do vetor U
+	std::string letraU = "";
+	int uL = planoEsquerdo->IntersectWithLine(zero.data(), u.data(), p, x);
+	int uR = planoDireito->IntersectWithLine(zero.data(), u.data(), p, x);
+	int uA = planoAnterior->IntersectWithLine(zero.data(), u.data(), p, x);
+	int uP = planoPosterior->IntersectWithLine(zero.data(), u.data(), p, x);
+	int uH = planoCabeca->IntersectWithLine(zero.data(), u.data(), p, x);
+	int uF = planoPe->IntersectWithLine(zero.data(), u.data(), p, x);
+	if (uL)letraU += "L";
+	if (uR)letraU += "R";
+	if (uA)letraU += "A";
+	if (uP)letraU += "P";
+	if (uH)letraU += "H";
+	if (uF)letraU += "F";
+
+	//Teste do vetor V
+	std::string letraV = "";
+	int vL = planoEsquerdo->IntersectWithLine(zero.data(), v.data(), p, x);
+	int vR = planoDireito->IntersectWithLine(zero.data(), v.data(), p, x);
+	int vA = planoAnterior->IntersectWithLine(zero.data(), v.data(), p, x);
+	int vP = planoPosterior->IntersectWithLine(zero.data(), v.data(), p, x);
+	int vH = planoCabeca->IntersectWithLine(zero.data(), v.data(), p, x);
+	int vF = planoPe->IntersectWithLine(zero.data(), v.data(), p, x);
+	if (vL)letraV += "L";
+	if (vR)letraV += "R";
+	if (vA)letraV += "A";
+	if (vP)letraV += "P";
+	if (vH)letraV += "H";
+	if (vF)letraV += "F";
+
+
+
+	letraDireita = ""; letraEsquerda = ""; letraCima = ""; letraBaixo = "";
+	letraEsquerda = letraU;
+	letraBaixo = letraV;
+
+}
+
+void myLetraRenderPass::Calculate(std::array<double, 4> orientation) {
 	//pega a orientação da câmera e cria uma transform.
-	_cameraOrientation = ren->GetActiveCamera()->GetOrientationWXYZ();
+	double* _cameraOrientation = orientation.data();//ren->GetActiveCamera()->GetOrientationWXYZ();
 	vtkSmartPointer<vtkGeneralTransform> _rotationTransform = vtkSmartPointer<vtkGeneralTransform>::New();
 	_rotationTransform->RotateWXYZ(_cameraOrientation[0], _cameraOrientation[1], _cameraOrientation[2], _cameraOrientation[3]);
 	_rotationTransform->Update();
@@ -46,8 +117,8 @@ void myLetraRenderPass::Calculate(vtkRenderer *ren) {
 	const double nRight[] = { -1, 0, 0 };
 	const double nTop[] = { 0, 1, 0 };
 	const double nBottom[] = { 0, -1, 0 };
-	const double nAnterior[] = { 0, 0, 1 };
-	const double nPosterior[] = { 0, 0, -1 };
+	const double nAnterior[] = { 0, 0, -1 };
+	const double nPosterior[] = { 0, 0, 1 };
 	//Transforma as normais usando a transformação criada acima
 	double _newLeft[3], _newRight[3], _newTop[3], _newBottom[3], _newAnterior[3], _newPosterior[3];
 	_rotationTransform->TransformVectorAtPoint(origin, nLeft, _newLeft);

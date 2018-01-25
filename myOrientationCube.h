@@ -1,5 +1,6 @@
 #pragma once
 #include "stdafx.h"
+#include "RenderPassLetraDeOrientacao.h"
 
 
 /////   Serve para gerar planos clippados por uma bounding box. Essa classe é necessária para resolver o 
@@ -97,6 +98,7 @@ public:
 	enum Interpolacao { NearestNeighbour, Linear, Cubic };
 	enum Funcao {MIP, MinP, Composite};
 private:
+	vtkSmartPointer<myLetraRenderPass> letraPass;
 	vtkSmartPointer<vtkCubeSource> cubeSource;
 	vtkSmartPointer<vtkPolyDataMapper> mapper;
 	vtkSmartPointer<vtkActor> actor;
