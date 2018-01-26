@@ -38,6 +38,7 @@ PURPOSE.  See the above copyright notice for more information.
 #define myInteractorStyleTrackballActor_h
 
 #include "stdafx.h"
+#include "IMyResliceCubeWidgetGeometryContainer.h"
 
 
 class vtkCellPicker;
@@ -73,6 +74,7 @@ public:
 	void Dolly() override;
 	void UniformScale() override;
 
+	void SetWidgetContainerHandle(IMyResliceCubeWidgetGeometryContainer* i);
 protected:
 	myInteractorStyleTrackballActor();
 	~myInteractorStyleTrackballActor() override;
@@ -91,6 +93,7 @@ protected:
 	vtkCellPicker *InteractionPicker;
 
 private:
+	IMyResliceCubeWidgetGeometryContainer* cubeWidgetContainer;
 	myInteractorStyleTrackballActor(const myInteractorStyleTrackballActor&) = delete;
 	void operator=(const myInteractorStyleTrackballActor&) = delete;
 };

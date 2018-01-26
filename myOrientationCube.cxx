@@ -255,6 +255,16 @@ void myOrientationCube::SetTipoDeFuncao(Funcao i)
 	tipoFuncao = i;
 }
 
+std::array<vtkSmartPointer<vtkActor>, 8> myOrientationCube::GetHandles()
+{
+	return handles;
+}
+
+vtkSmartPointer<vtkActor> myOrientationCube::GetCube()
+{
+	return cubeActor;
+}
+
 void myOrientationCube::DebugSave() {
 #ifndef NDEBUG
 	boost::posix_time::ptime current_date_microseconds = boost::posix_time::microsec_clock::local_time();

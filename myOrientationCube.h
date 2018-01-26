@@ -1,8 +1,9 @@
 #pragma once
 #include "stdafx.h"
 #include "RenderPassLetraDeOrientacao.h"
+#include "IMyResliceCubeWidgetGeometryContainer.h"
  
-class myOrientationCube : public vtkCommand{
+class myOrientationCube : public vtkCommand, public IMyResliceCubeWidgetGeometryContainer{
 public:
 	enum Interpolacao { NearestNeighbour, Linear, Cubic };
 	enum Funcao {MIP, MinP, Composite};
@@ -43,4 +44,7 @@ public:
 	void SetSlabThickness(double mm);
 	void SetInterpolacao(Interpolacao i);
 	void SetTipoDeFuncao(Funcao i);
+
+	std::array<vtkSmartPointer<vtkActor>, 8> GetHandles() override;
+	vtkSmartPointer<vtkActor> GetCube() override;
 };

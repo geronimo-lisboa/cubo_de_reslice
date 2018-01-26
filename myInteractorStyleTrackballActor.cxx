@@ -28,6 +28,9 @@ PURPOSE.  See the above copyright notice for more information.
 
 vtkStandardNewMacro(myInteractorStyleTrackballActor);
 
+void myInteractorStyleTrackballActor::SetWidgetContainerHandle(IMyResliceCubeWidgetGeometryContainer* i) {
+	this->cubeWidgetContainer = i;
+}
 //----------------------------------------------------------------------------
 myInteractorStyleTrackballActor::myInteractorStyleTrackballActor()
 {
@@ -35,6 +38,7 @@ myInteractorStyleTrackballActor::myInteractorStyleTrackballActor()
 	this->InteractionProp = nullptr;
 	this->InteractionPicker = vtkCellPicker::New();
 	this->InteractionPicker->SetTolerance(0.001);
+	this->cubeWidgetContainer = nullptr;
 }
 
 //----------------------------------------------------------------------------
@@ -552,6 +556,29 @@ void myInteractorStyleTrackballActor::FindPickedActor(int x, int y)
 {
 	this->InteractionPicker->Pick(x, y, 0.0, this->CurrentRenderer);
 	vtkAssemblyPath* path = this->InteractionPicker->GetPath();//Isso aqui vai ser necessário qdo eu usar a assembly
+	path->InitTraversal();
+	for (auto i = 0; i < path->GetNumberOfItems(); i++) {
+		vtkAssemblyNode *currentNode = path->GetNextNode();
+		vtkProp* nodeProp = currentNode->GetViewProp();
+		vtkActor* actorDoCubo = cubeWidgetContainer->GetCube();
+		//A assembly é o primeiro nó
+		if (nodeProp->IsA("vtkAssembly"))
+			continue;
+		if (nodeProp == actorDoCubo)
+			std::cout << "achou o cubo" << std::endl;
+		if ((nodeProp == cubeWidgetContainer->GetHandles()[0].GetPointer())||
+			(nodeProp == cubeWidgetContainer->GetHandles()[1].GetPointer()) ||
+			(nodeProp == cubeWidgetContainer->GetHandles()[2].GetPointer()) ||
+			(nodeProp == cubeWidgetContainer->GetHandles()[3].GetPointer()) ||
+			(nodeProp == cubeWidgetContainer->GetHandles()[4].GetPointer()) ||
+			(nodeProp == cubeWidgetContainer->GetHandles()[5].GetPointer()) ||
+			(nodeProp == cubeWidgetContainer->GetHandles()[6].GetPointer()) ||
+			(nodeProp == cubeWidgetContainer->GetHandles()[7].GetPointer()))
+		{
+			std::cout << "achou um handle" << std::endl;
+		}
+	}
+
 	vtkProp *prop = this->InteractionPicker->GetViewProp();
 	if (prop != nullptr)
 	{
