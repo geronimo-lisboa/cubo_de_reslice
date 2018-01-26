@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-set (DLL_BUILD FALSE)
+set (DLL_BUILD TRUE)
 
 project( mprcubo )
 #Seta os paths da VTK, ITK e SDL2

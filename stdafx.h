@@ -1,6 +1,6 @@
 #pragma once
 #define _SCL_SECURE_NO_WARNINGS
-
+#include <vtkWin32RenderWindowInteractor.h>
 #include <vtkObject.h>
 #include <vtkObjectFactory.h>
 #include <vtkRenderer.h>
@@ -73,3 +73,4 @@
 #include <vtkAssembly.h>
 #include <vtkSphereSource.h>
 
+typedef void(_stdcall*FNCallbackDeCarga)(float);
