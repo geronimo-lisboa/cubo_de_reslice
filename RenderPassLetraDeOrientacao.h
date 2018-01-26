@@ -18,5 +18,5 @@ public:
 	static myLetraRenderPass *New();
 	void Render(const vtkRenderState* s);
 	void Calculate(std::array<double, 4> orientation);
-	void Calculate(std::array<double, 3> u, std::array<double, 3> v, vtkRenderer* ren);
+ 
 };

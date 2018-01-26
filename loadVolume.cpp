@@ -20,30 +20,6 @@ const std::vector<std::string> GetList(std::string path)
 	//The files that contains each of the individual slices that define an image.
 	FileNamesContainer fileNames = nameGenerator->GetFileNames(seriesUID[0]);
 	return fileNames;
-	//reader->SetFileNames(fileNames);
-	//try
-	//{
-	//	reader->Update();
-	//	ImageType::Pointer result = reader->GetOutput();
-	//	result->Print(std::cout);//My image, loaded.
-	//}
-	//catch (itk::ExceptionObject& ex)
-	//{
-	//	ex.Print(std::cout);
-	//}
-///////
-	//std::string line;
-	//std::vector<std::string>listaDeFatias;
-	//std::ifstream myfile(path);
-	//if (myfile.is_open())
-	//{
-	//	while (getline(myfile, line))
-	//	{
-	//		listaDeFatias.push_back(line);
-	//	}
-	//	myfile.close();
-	//}
-	//return listaDeFatias;
 }
 
 itk::Image<short, 3>::Pointer LoadVolume(std::map<std::string, std::string> &outputMetadata,
@@ -65,7 +41,7 @@ itk::Image<short, 3>::Pointer LoadVolume(std::map<std::string, std::string> &out
 	//antes de sair abrindo tudo e tomar exceção se algo não for encontrado testar para cada arquivo fornecido
 	////se ele existe. Se não existe, tira da lista
 	std::vector<int> indices_zuados;
-	for (int i = 0; i < foo.size(); i++)
+	for (unsigned int i = 0; i < foo.size(); i++)
 	{
 		std::string path = foo[i];
 		WIN32_FIND_DATA FindFileData;
@@ -82,7 +58,7 @@ itk::Image<short, 3>::Pointer LoadVolume(std::map<std::string, std::string> &out
 	}
 	//if (indices_zuados.size()>0)
 	//	throw "Série corrompida - indices zuados";
-	for (int i = 0; i < indices_zuados.size(); i++)
+	for (unsigned int i = 0; i < indices_zuados.size(); i++)
 	{
 		foo.erase(foo.begin() + indices_zuados[i]);
 	}

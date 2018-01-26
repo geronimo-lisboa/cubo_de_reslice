@@ -137,9 +137,6 @@ void myOrientationCube::UpdateReslice() {
 	transformRot->Inverse();
 	transformTrans->Concatenate(transformRot);
 
-	//teste vtkSmartPointer<vtkMatrix4x4> localMat = vtkSmartPointer<vtkMatrix4x4>::New();
-	//teste localMat->DeepCopy(actor->GetMatrix());
-	//teste thickSlabReslice->SetResliceAxes(localMat);
 	vtkSmartPointer<vtkMatrix4x4> mat = vtkSmartPointer<vtkMatrix4x4>::New();
 	mat->Identity();
 	thickSlabReslice->SetResliceAxes(mat);
@@ -169,27 +166,14 @@ void myOrientationCube::UpdateReslice() {
 	}
 	thickSlabReslice->SetSlabThickness(thickness);
 
-
-	thickSlabReslice->AutoCropOutputOn(); //O PROBLEMA É AQUI. É isso aqui que resolve o bug do tamanho do reslice mas cria o bug do translate e quebra o zoom via aumento/redução do cubo
-	//teste thickSlabReslice->SetResliceAxesOrigin(actor->GetCenter()); //OK, MAS NÃO BASTA PRO BUG DO RESLICE
-	thickSlabReslice->SetOutputOriginToDefault();//OK , MAS NÃO BASTA PRO BUG DO RESLICE
-												 //thickSlabReslice->SetUpdateExtentToWholeExtent(); //OK, MAS NÃO BASTA PRO BUG DO RESLICE
-	thickSlabReslice->SetOutputExtentToDefault();//OK, MAS NÃO BASTA PRO BUG DO RESLICE
-												 //////fim do foco da dengue
-												 //update
+	thickSlabReslice->AutoCropOutputOn();
+	thickSlabReslice->SetOutputOriginToDefault();
+	thickSlabReslice->SetOutputExtentToDefault();
 	thickSlabReslice->Update();
 	vtkImageData* resultado = thickSlabReslice->GetOutput();
 	assert(resultado->GetExtent()[1] != -1);
 
-	//boost::posix_time::ptime current_date_microseconds = boost::posix_time::microsec_clock::local_time();
-	//long milliseconds = current_date_microseconds.time_of_day().total_milliseconds();
-	//std::string filename = "c:\\mprcubo\\dump\\" + boost::lexical_cast<std::string>(milliseconds) + ".vti";
-	//vtkSmartPointer<vtkXMLImageDataWriter> debugsave = vtkSmartPointer<vtkXMLImageDataWriter>::New();
-	//debugsave->SetFileName(filename.c_str());
-	//debugsave->SetInputData(resultado);
-	//debugsave->BreakOnError();
-	//debugsave->Write();
-	//long err = debugsave->GetErrorCode();
+
 	////Bota na tela
 	static bool alredyReset;
 	static bool alredyZoomed;
@@ -201,10 +185,12 @@ void myOrientationCube::UpdateReslice() {
 	alredyZoomed = true;
 	
 	std::array<double, 4> orientation = { {actor->GetOrientationWXYZ()[0], actor->GetOrientationWXYZ()[1], actor->GetOrientationWXYZ()[2], actor->GetOrientationWXYZ()[3]} };
-	std::cout << "orientation = " << orientation[0] << ", " << orientation[1] << ", " << orientation[2] << ", " << orientation[3] << std::endl;
+	
 	std::array<double, 3> u = { {actor->GetMatrix()->Element[0][0], actor->GetMatrix()->Element[1][0], actor->GetMatrix()->Element[2][0]} };
 	std::array<double, 3> v = { { actor->GetMatrix()->Element[0][1], actor->GetMatrix()->Element[1][1], actor->GetMatrix()->Element[2][1] } };
 	letraPass->Calculate(orientation);
+
+	DebugSave();
 }
 
 void myOrientationCube::Execute(vtkObject * caller, unsigned long ev, void * calldata)
@@ -238,4 +224,17 @@ void myOrientationCube::SetInterpolacao(Interpolacao i)
 void myOrientationCube::SetTipoDeFuncao(Funcao i)
 {
 	tipoFuncao = i;
+}
+
+void myOrientationCube::DebugSave() {
+#ifndef NDEBUG
+	boost::posix_time::ptime current_date_microseconds = boost::posix_time::microsec_clock::local_time();
+	long milliseconds = current_date_microseconds.time_of_day().total_milliseconds();
+	std::string filename = "c:\\mprcubo\\dump\\" + boost::lexical_cast<std::string>(milliseconds) + ".vti";
+	vtkSmartPointer<vtkXMLImageDataWriter> debugsave = vtkSmartPointer<vtkXMLImageDataWriter>::New();
+	debugsave->SetFileName(filename.c_str());
+	debugsave->SetInputData(thickSlabReslice->GetOutput());
+	debugsave->BreakOnError();
+	debugsave->Write();
+#endif
 }

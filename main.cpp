@@ -81,12 +81,7 @@ int main(int, char *[])
 	renderWindowInteractor->SetRenderWindow(renderWindow);
 	vtkSmartPointer<vtkInteractorStyleTrackballActor> style = vtkSmartPointer<vtkInteractorStyleTrackballActor>::New();
 	renderWindowInteractor->SetInteractorStyle(style);
-	// Create a cube.
-	//vtkSmartPointer<myOrientationCubeViewer> myViewer = vtkSmartPointer<myOrientationCubeViewer>::New();
-	//myViewer->DebugOn();
-	//myViewer->SetRenderers(rendererDaCamadaDaImagem, rendererDaCamadaDoCubo);	
-	//myViewer->SetImage(imagemImportadaPraVTK);
-	//myViewer->Build();
+
 	vtkSmartPointer<myOrientationCube> cuboDeOrientacao = vtkSmartPointer<myOrientationCube>::New();
 	cuboDeOrientacao->SetRenderers(rendererDaCamadaDaImagem, rendererDaCamadaDoCubo);	
 	cuboDeOrientacao->SetImage(imagemImportadaPraVTK);
