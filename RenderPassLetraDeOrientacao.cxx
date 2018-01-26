@@ -69,39 +69,77 @@ void myLetraRenderPass::Calculate(std::array<double, 3> u, std::array<double, 3>
 	double x[3];
 	//Teste do vetor U
 	std::string letraU = "";
+	std::string letraAntiU = "";
 	int uL = planoEsquerdo->IntersectWithLine(zero.data(), u.data(), p, x);
 	int uR = planoDireito->IntersectWithLine(zero.data(), u.data(), p, x);
 	int uA = planoAnterior->IntersectWithLine(zero.data(), u.data(), p, x);
 	int uP = planoPosterior->IntersectWithLine(zero.data(), u.data(), p, x);
 	int uH = planoCabeca->IntersectWithLine(zero.data(), u.data(), p, x);
 	int uF = planoPe->IntersectWithLine(zero.data(), u.data(), p, x);
-	if (uL)letraU += "L";
-	if (uR)letraU += "R";
-	if (uA)letraU += "A";
-	if (uP)letraU += "P";
-	if (uH)letraU += "H";
-	if (uF)letraU += "F";
+	if (uL) {
+		letraU += "L";
+		letraAntiU += "R";
+	}
+	if (uR) {
+		letraU += "R";
+		letraAntiU += "L";
+	}
+	if (uA) {
+		letraU += "A";
+		letraAntiU += "P";
+	}
+	if (uP) {
+		letraU += "P";
+		letraAntiU += "A";
+	}
+	if (uH) {
+		letraU += "H";
+		letraAntiU += "F";
+	}
+	if (uF) {
+		letraU += "F";
+		letraAntiU += "H";
+	}
 
 	//Teste do vetor V
 	std::string letraV = "";
+	std::string letraAntiV = "";
 	int vL = planoEsquerdo->IntersectWithLine(zero.data(), v.data(), p, x);
 	int vR = planoDireito->IntersectWithLine(zero.data(), v.data(), p, x);
 	int vA = planoAnterior->IntersectWithLine(zero.data(), v.data(), p, x);
 	int vP = planoPosterior->IntersectWithLine(zero.data(), v.data(), p, x);
 	int vH = planoCabeca->IntersectWithLine(zero.data(), v.data(), p, x);
 	int vF = planoPe->IntersectWithLine(zero.data(), v.data(), p, x);
-	if (vL)letraV += "L";
-	if (vR)letraV += "R";
-	if (vA)letraV += "A";
-	if (vP)letraV += "P";
-	if (vH)letraV += "H";
-	if (vF)letraV += "F";
-
-
+	if (vL) {
+		letraV += "L";
+		letraAntiV += "R";
+	}
+	if (vR) {
+		letraV += "R";
+		letraAntiV += "L";
+	}
+	if (vA) {
+		letraV += "A";
+		letraAntiV += "P";
+	}
+	if (vP) {
+		letraV += "P";
+		letraAntiV += "A";
+	}
+	if (vH) {
+		letraV += "H";
+		letraAntiV += "F";
+	}
+	if (vF) {
+		letraV += "F";
+		letraAntiV += "H";
+	}
 
 	letraDireita = ""; letraEsquerda = ""; letraCima = ""; letraBaixo = "";
 	letraEsquerda = letraU;
+	letraDireita = letraAntiU;
 	letraBaixo = letraV;
+	letraCima = letraAntiV;
 
 }
 
