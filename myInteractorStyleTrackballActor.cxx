@@ -52,7 +52,6 @@ void myInteractorStyleTrackballActor::OnMouseMove()
 {
 	int x = this->Interactor->GetEventPosition()[0];
 	int y = this->Interactor->GetEventPosition()[1];
-
 	switch (this->State)
 	{
 	case VTKIS_ROTATE:
@@ -564,8 +563,10 @@ void myInteractorStyleTrackballActor::FindPickedActor(int x, int y)
 		//A assembly é o primeiro nó
 		if (nodeProp->IsA("vtkAssembly"))
 			continue;
-		if (nodeProp == actorDoCubo)
-			std::cout << "achou o cubo" << std::endl;
+		if (nodeProp == actorDoCubo) {
+			this->State = VTKIS_ROTATE;
+		}
+			
 		if ((nodeProp == cubeWidgetContainer->GetHandles()[0].GetPointer())||
 			(nodeProp == cubeWidgetContainer->GetHandles()[1].GetPointer()) ||
 			(nodeProp == cubeWidgetContainer->GetHandles()[2].GetPointer()) ||
@@ -575,10 +576,9 @@ void myInteractorStyleTrackballActor::FindPickedActor(int x, int y)
 			(nodeProp == cubeWidgetContainer->GetHandles()[6].GetPointer()) ||
 			(nodeProp == cubeWidgetContainer->GetHandles()[7].GetPointer()))
 		{
-			std::cout << "achou um handle" << std::endl;
+			this->State = VTKIS_SPIN;
 		}
 	}
-
 	vtkProp *prop = this->InteractionPicker->GetViewProp();
 	if (prop != nullptr)
 	{
