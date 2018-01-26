@@ -49,20 +49,20 @@ void myLetraRenderPass::Calculate(std::array<double, 3> u, std::array<double, 3>
 	planoDireito->SetNormal(-1, 0, 0);
 
 	vtkSmartPointer<vtkPlane> planoAnterior = vtkSmartPointer<vtkPlane>::New();
-	planoAnterior->SetOrigin(0, 0, -0.5);
-	planoAnterior->SetNormal(0, 0, 1);
+	planoAnterior->SetOrigin(0, 0, 0.5);
+	planoAnterior->SetNormal(0, 0, -1);
 
 	vtkSmartPointer<vtkPlane> planoPosterior = vtkSmartPointer<vtkPlane>::New();
-	planoPosterior->SetOrigin(0, 0, 0.5);
-	planoPosterior->SetNormal(0, 0, -1);
+	planoPosterior->SetOrigin(0, 0, -0.5);
+	planoPosterior->SetNormal(0, 0, 1);
 	
 	vtkSmartPointer<vtkPlane> planoCabeca = vtkSmartPointer<vtkPlane>::New();
-	planoCabeca->SetOrigin(0, -0.5, 0);
-	planoCabeca->SetNormal(0, 1, 0 );
+	planoCabeca->SetOrigin(0, 0.5, 0);
+	planoCabeca->SetNormal(0, -1, 0 );
 
 	vtkSmartPointer<vtkPlane> planoPe = vtkSmartPointer<vtkPlane>::New();
-	planoPe->SetOrigin(0, 0.5, 0);
-	planoPe->SetNormal(0, -1, 0);
+	planoPe->SetOrigin(0, -0.5, 0);
+	planoPe->SetNormal(0, 1, 0);
 
 	//O teste de interceptação dos vetores;
 	double p;
@@ -138,8 +138,8 @@ void myLetraRenderPass::Calculate(std::array<double, 3> u, std::array<double, 3>
 	letraDireita = ""; letraEsquerda = ""; letraCima = ""; letraBaixo = "";
 	letraEsquerda = letraU;
 	letraDireita = letraAntiU;
-	letraBaixo = letraV;
-	letraCima = letraAntiV;
+	letraBaixo = letraAntiV;
+	letraCima = letraV;
 
 }
 
@@ -184,8 +184,8 @@ void myLetraRenderPass::Calculate(std::array<double, 4> orientation) {
 		if (iR) letraLadoEsquerdo = letraLadoEsquerdo + "R";
 		if (iT) letraLadoEsquerdo = letraLadoEsquerdo + "H";
 		if (iB) letraLadoEsquerdo = letraLadoEsquerdo + "F";
-		if (iA) letraLadoEsquerdo = letraLadoEsquerdo + "A";
-		if (iP) letraLadoEsquerdo = letraLadoEsquerdo + "P";
+		if (iA) letraLadoEsquerdo = letraLadoEsquerdo + "P";
+		if (iP) letraLadoEsquerdo = letraLadoEsquerdo + "A";
 
 		letraEsquerda = letraLadoEsquerdo;
 	}
@@ -207,8 +207,8 @@ void myLetraRenderPass::Calculate(std::array<double, 4> orientation) {
 		if (iR) letra = letra + "R";
 		if (iT) letra = letra + "H";
 		if (iB) letra = letra + "F";
-		if (iA) letra = letra + "A";
-		if (iP) letra = letra + "P";
+		if (iA) letra = letra + "P";
+		if (iP) letra = letra + "A";
 		letraDireita = letra;
 	}
 	{
@@ -229,8 +229,8 @@ void myLetraRenderPass::Calculate(std::array<double, 4> orientation) {
 		if (iR) letra = letra + "R";
 		if (iT) letra = letra + "H";
 		if (iB) letra = letra + "F";
-		if (iA) letra = letra + "A";
-		if (iP) letra = letra + "P";
+		if (iA) letra = letra + "P";
+		if (iP) letra = letra + "A";
 		letraCima = letra;
 	}
 	{
@@ -251,8 +251,8 @@ void myLetraRenderPass::Calculate(std::array<double, 4> orientation) {
 		if (iR) letra = letra + "R";
 		if (iT) letra = letra + "H";
 		if (iB) letra = letra + "F";
-		if (iA) letra = letra + "A";
-		if (iP) letra = letra + "P";
+		if (iA) letra = letra + "P";
+		if (iP) letra = letra + "A";
 		letraBaixo = letra;
 	}
 }

@@ -127,8 +127,22 @@ void myOrientationCube::UpdateReslice() {
 	ColorMap->SetInputConnection(thickSlabReslice->GetOutputPort());
 	thickSlabReslice->TransformInputSamplingOff();
 
-	vtkSmartPointer<vtkMatrix4x4> ResliceAxes = vtkSmartPointer<vtkMatrix4x4>::New();
-	thickSlabReslice->SetResliceAxes(actor->GetMatrix());
+	vtkSmartPointer<vtkTransform> transformTrans = vtkSmartPointer<vtkTransform>::New();
+	transformTrans->Translate(actor->GetCenter());	
+	transformTrans->Update();
+
+	vtkSmartPointer<vtkTransform> transformRot = vtkSmartPointer<vtkTransform>::New();
+	transformRot->RotateWXYZ(actor->GetOrientationWXYZ()[0], actor->GetOrientationWXYZ()[1], actor->GetOrientationWXYZ()[2], actor->GetOrientationWXYZ()[3]);
+	transformRot->Inverse();
+	transformTrans->Concatenate(transformRot);
+
+	//teste vtkSmartPointer<vtkMatrix4x4> localMat = vtkSmartPointer<vtkMatrix4x4>::New();
+	//teste localMat->DeepCopy(actor->GetMatrix());
+	//teste thickSlabReslice->SetResliceAxes(localMat);
+	vtkSmartPointer<vtkMatrix4x4> mat = vtkSmartPointer<vtkMatrix4x4>::New();
+	mat->Identity();
+	thickSlabReslice->SetResliceAxes(mat);
+	thickSlabReslice->SetResliceTransform(transformTrans);
 	thickSlabReslice->SetOutputDimensionality(2);
 	switch (tipoInterpolacao) {
 	case NearestNeighbour:
@@ -156,7 +170,7 @@ void myOrientationCube::UpdateReslice() {
 
 
 	thickSlabReslice->AutoCropOutputOn(); //O PROBLEMA É AQUI. É isso aqui que resolve o bug do tamanho do reslice mas cria o bug do translate e quebra o zoom via aumento/redução do cubo
-	thickSlabReslice->SetResliceAxesOrigin(actor->GetCenter()); //OK, MAS NÃO BASTA PRO BUG DO RESLICE
+	//teste thickSlabReslice->SetResliceAxesOrigin(actor->GetCenter()); //OK, MAS NÃO BASTA PRO BUG DO RESLICE
 	thickSlabReslice->SetOutputOriginToDefault();//OK , MAS NÃO BASTA PRO BUG DO RESLICE
 												 //thickSlabReslice->SetUpdateExtentToWholeExtent(); //OK, MAS NÃO BASTA PRO BUG DO RESLICE
 	thickSlabReslice->SetOutputExtentToDefault();//OK, MAS NÃO BASTA PRO BUG DO RESLICE
@@ -185,11 +199,11 @@ void myOrientationCube::UpdateReslice() {
 		imageLayer->GetActiveCamera()->Zoom(2);
 	alredyZoomed = true;
 	
-	//std::array<double, 4> orientation = { {actor->GetOrientationWXYZ()[0], actor->GetOrientationWXYZ()[1], actor->GetOrientationWXYZ()[2], actor->GetOrientationWXYZ()[3]} };
-	//std::cout << "orientation = " << orientation[0] << ", " << orientation[1] << ", " << orientation[2] << ", " << orientation[3] << std::endl;
+	std::array<double, 4> orientation = { {actor->GetOrientationWXYZ()[0], actor->GetOrientationWXYZ()[1], actor->GetOrientationWXYZ()[2], actor->GetOrientationWXYZ()[3]} };
+	std::cout << "orientation = " << orientation[0] << ", " << orientation[1] << ", " << orientation[2] << ", " << orientation[3] << std::endl;
 	std::array<double, 3> u = { {actor->GetMatrix()->Element[0][0], actor->GetMatrix()->Element[1][0], actor->GetMatrix()->Element[2][0]} };
 	std::array<double, 3> v = { { actor->GetMatrix()->Element[0][1], actor->GetMatrix()->Element[1][1], actor->GetMatrix()->Element[2][1] } };
-	letraPass->Calculate(u,v, imageLayer);
+	letraPass->Calculate(orientation);
 }
 
 void myOrientationCube::Execute(vtkObject * caller, unsigned long ev, void * calldata)
