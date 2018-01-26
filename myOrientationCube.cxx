@@ -67,6 +67,7 @@ myOrientationCube::myOrientationCube() {
 }
 
 void myOrientationCube::SetRenderers(vtkRenderer* imageLayer, vtkRenderer* cubeLayer) {
+	imageLayer->SetBackground(0, 0, 0);
 	owner = cubeLayer;
 	this->imageLayer = imageLayer;
 	CreateThings();
