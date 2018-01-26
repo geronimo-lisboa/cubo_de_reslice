@@ -39,6 +39,7 @@ myInteractorStyleTrackballActor::myInteractorStyleTrackballActor()
 	this->InteractionPicker = vtkCellPicker::New();
 	this->InteractionPicker->SetTolerance(0.001);
 	this->cubeWidgetContainer = nullptr;
+	this->currentMouseButton = 0;
 }
 
 //----------------------------------------------------------------------------
@@ -89,6 +90,7 @@ void myInteractorStyleTrackballActor::OnMouseMove()
 //----------------------------------------------------------------------------
 void myInteractorStyleTrackballActor::OnLeftButtonDown()
 {
+	currentMouseButton = 0;
 	int x = this->Interactor->GetEventPosition()[0];
 	int y = this->Interactor->GetEventPosition()[1];
 
@@ -141,6 +143,7 @@ void myInteractorStyleTrackballActor::OnLeftButtonUp()
 //----------------------------------------------------------------------------
 void myInteractorStyleTrackballActor::OnMiddleButtonDown()
 {
+	currentMouseButton = 1;
 	int x = this->Interactor->GetEventPosition()[0];
 	int y = this->Interactor->GetEventPosition()[1];
 
@@ -185,6 +188,7 @@ void myInteractorStyleTrackballActor::OnMiddleButtonUp()
 //----------------------------------------------------------------------------
 void myInteractorStyleTrackballActor::OnRightButtonDown()
 {
+	currentMouseButton = 2;
 	int x = this->Interactor->GetEventPosition()[0];
 	int y = this->Interactor->GetEventPosition()[1];
 
@@ -563,7 +567,7 @@ void myInteractorStyleTrackballActor::FindPickedActor(int x, int y)
 		//A assembly é o primeiro nó
 		if (nodeProp->IsA("vtkAssembly"))
 			continue;
-		if (nodeProp == actorDoCubo) {
+		if (nodeProp == actorDoCubo && currentMouseButton == 0) {
 			this->State = VTKIS_ROTATE;
 		}
 			
@@ -574,7 +578,7 @@ void myInteractorStyleTrackballActor::FindPickedActor(int x, int y)
 			(nodeProp == cubeWidgetContainer->GetHandles()[4].GetPointer()) ||
 			(nodeProp == cubeWidgetContainer->GetHandles()[5].GetPointer()) ||
 			(nodeProp == cubeWidgetContainer->GetHandles()[6].GetPointer()) ||
-			(nodeProp == cubeWidgetContainer->GetHandles()[7].GetPointer()))
+			(nodeProp == cubeWidgetContainer->GetHandles()[7].GetPointer()) && currentMouseButton == 0)
 		{
 			this->State = VTKIS_SPIN;
 		}

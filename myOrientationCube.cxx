@@ -265,6 +265,37 @@ vtkSmartPointer<vtkActor> myOrientationCube::GetCube()
 	return cubeActor;
 }
 
+std::array<double, 3> myOrientationCube::GetCenter()
+{
+	std::array<double, 3> c = { {actor->GetCenter()[0], actor->GetCenter()[1], actor->GetCenter()[2]} };
+	return c;
+}
+
+std::array<double, 6> myOrientationCube::GetBounds()
+{
+	vtkImageData * i = image->GetOutput();
+	
+	std::array<double, 6> b = { {
+			(i->GetBounds()[0] + i->GetCenter()[0]) * i->GetSpacing()[0],
+			(i->GetBounds()[1] + i->GetCenter()[0]) * i->GetSpacing()[0],
+			(i->GetBounds()[2] + i->GetCenter()[1]) * i->GetSpacing()[1],
+			(i->GetBounds()[3] + i->GetCenter()[1]) * i->GetSpacing()[1],
+			(i->GetBounds()[4] + i->GetCenter()[2]) * i->GetSpacing()[2],
+			(i->GetBounds()[5] + i->GetCenter()[2]) * i->GetSpacing()[2],
+		} };
+	return b;
+}
+
+std::array<double, 3> myOrientationCube::GetNormal()
+{
+	std::array<double, 3> n = { {
+			actor->GetMatrix()->Element[0][2],
+			actor->GetMatrix()->Element[1][2],
+			actor->GetMatrix()->Element[2][2]
+		} };
+	return n;
+}
+
 void myOrientationCube::DebugSave() {
 #ifndef NDEBUG
 	boost::posix_time::ptime current_date_microseconds = boost::posix_time::microsec_clock::local_time();

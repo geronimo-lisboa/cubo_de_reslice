@@ -2,8 +2,9 @@
 #include "stdafx.h"
 #include "RenderPassLetraDeOrientacao.h"
 #include "IMyResliceCubeWidgetGeometryContainer.h"
+#include "IResliceProperties.h"
  
-class myOrientationCube : public vtkCommand, public IMyResliceCubeWidgetGeometryContainer{
+class myOrientationCube : public vtkCommand, public IMyResliceCubeWidgetGeometryContainer, public IResliceProperties{
 public:
 	enum Interpolacao { NearestNeighbour, Linear, Cubic };
 	enum Funcao {MIP, MinP, Composite};
@@ -47,4 +48,8 @@ public:
 
 	std::array<vtkSmartPointer<vtkActor>, 8> GetHandles() override;
 	vtkSmartPointer<vtkActor> GetCube() override;
+
+	std::array<double, 3> GetCenter() override;
+	std::array<double, 6> GetBounds() override;
+	std::array<double, 3> GetNormal() override;
 };

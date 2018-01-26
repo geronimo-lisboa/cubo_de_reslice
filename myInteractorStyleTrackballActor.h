@@ -88,7 +88,7 @@ protected:
 		double *scale);
 
 	double MotionFactor;
-
+	int currentMouseButton;
 	vtkProp3D *InteractionProp;
 	vtkCellPicker *InteractionPicker;
 
