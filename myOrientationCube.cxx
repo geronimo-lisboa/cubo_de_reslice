@@ -64,6 +64,9 @@ myOrientationCube::myOrientationCube() {
 	SetInterpolacao(Linear);
 	SetTipoDeFuncao(Composite);
 	letraPass = nullptr;
+	alredyReset = nullptr;
+	alredyZoomed = nullptr;
+
 }
 
 void myOrientationCube::SetRenderers(vtkRenderer* imageLayer, vtkRenderer* cubeLayer) {
@@ -175,8 +178,7 @@ void myOrientationCube::UpdateReslice() {
 
 
 	////Bota na tela
-	static bool alredyReset;
-	static bool alredyZoomed;
+
 	if (!alredyReset)
 		imageLayer->ResetCamera();
 	alredyReset = true;

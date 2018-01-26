@@ -21,6 +21,8 @@ private:
 	double thickness;
 	Interpolacao tipoInterpolacao;
 	Funcao tipoFuncao;
+	bool alredyReset;
+	bool alredyZoomed;
 
 	myOrientationCube();
 	void CreateThings();
