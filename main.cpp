@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "myOrientationCube.h"
 #include "loadVolume.h"
-#include "myOrientationCubeViewer.h"
+
 class ObserveLoadProgressCommand : public itk::Command
 {
 public:

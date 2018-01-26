@@ -27,7 +27,7 @@ public:
 		const double centerY = (extent[3] + extent[2]) / 2;
 		const double centerZ = (extent[5] + extent[4]) / 2;
 		//Cria os planos implicitos que serão usados pra cortar a superficie.
-		for (int i = 0; i < planes.size(); i++) {
+		for (unsigned int i = 0; i < planes.size(); i++) {
 			planes[i] = vtkSmartPointer<vtkPlane>::New();
 			switch (i) {
 			case 0:
@@ -64,7 +64,7 @@ public:
 		plane->SetNormal(planeNormal);
 		plane->Update();
 		//Faz o corte
-		for (int i = 0; i < clippers.size(); i++) {
+		for (unsigned int i = 0; i < clippers.size(); i++) {
 			if (clippers[i] == nullptr)
 				clippers[i] = vtkSmartPointer<vtkClipPolyData>::New();
 			vtkSmartPointer<vtkClipPolyData> clip = clippers[i];
