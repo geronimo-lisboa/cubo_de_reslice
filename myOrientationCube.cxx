@@ -16,21 +16,50 @@ std::array<double, 3> operator-(const std::array<double, 3> v1, const std::array
 	return r;
 }
 
+vtkSmartPointer<vtkActor> myOrientationCube::CreateSphereHandle(vtkSphereSource* src, double x, double y, double z) {
+	auto shMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+	shMapper->SetInputConnection(src->GetOutputPort());
+	auto handleActor = vtkSmartPointer<vtkActor>::New();
+	handleActor->SetMapper(shMapper);
+	handleActor->GetProperty()->BackfaceCullingOff();
+	handleActor->GetProperty()->SetColor(0, 1, 0);
+	handleActor->GetProperty()->LightingOff();
+	handleActor->SetPosition(x, y, z);
+	return handleActor;
+}
+
 void myOrientationCube::CreateThings() {
-	cubeSource = vtkSmartPointer<vtkCubeSource>::New();
+	auto cubeSource = vtkSmartPointer<vtkCubeSource>::New();
 	cubeSource->SetXLength(100);
 	cubeSource->SetYLength(100);
 	cubeSource->SetZLength(100);
-	mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-	mapper->SetInputConnection(cubeSource->GetOutputPort());
-	actor = vtkSmartPointer<vtkActor>::New();
-	actor->SetMapper(mapper);
-	actor->GetProperty()->BackfaceCullingOff();
-	actor->GetProperty()->SetRepresentationToWireframe();
-	actor->GetProperty()->SetColor(0, 1, 0);
-	actor->GetProperty()->LightingOff();
-	actor->GetProperty()->BackfaceCullingOff();
-	actor->GetProperty()->SetLineWidth(2);
+	auto cubeMapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+	cubeMapper->SetInputConnection(cubeSource->GetOutputPort());
+	cubeActor = vtkSmartPointer<vtkActor>::New();
+	cubeActor->SetMapper(cubeMapper);
+	cubeActor->GetProperty()->BackfaceCullingOff();
+	cubeActor->GetProperty()->SetRepresentationToWireframe();
+	cubeActor->GetProperty()->SetColor(0, 0.75, 0);
+	cubeActor->GetProperty()->LightingOff();
+	cubeActor->GetProperty()->BackfaceCullingOff();
+	cubeActor->GetProperty()->SetLineWidth(2);
+	
+	auto sh01 = vtkSmartPointer<vtkSphereSource>::New();
+	sh01->SetRadius(6.125);
+	handles[0] = CreateSphereHandle(sh01, -50,  50, -50);
+	handles[1] = CreateSphereHandle(sh01,  50,  50, -50);
+	handles[2] = CreateSphereHandle(sh01,  50, -50, -50);
+	handles[3] = CreateSphereHandle(sh01, -50, -50, -50);
+	handles[4] = CreateSphereHandle(sh01, -50,  50,  50);
+	handles[5] = CreateSphereHandle(sh01,  50,  50,  50);
+	handles[6] = CreateSphereHandle(sh01,  50, -50,  50);
+	handles[7] = CreateSphereHandle(sh01, -50, -50,  50);
+
+	
+	actor = vtkSmartPointer<vtkAssembly>::New();
+	actor->AddPart(cubeActor);
+	for (vtkSmartPointer<vtkActor> a : handles)
+		actor->AddPart(a);
 
 	//-------
 	axes2 = vtkSmartPointer<vtkAxesActor>::New();
@@ -53,8 +82,6 @@ void myOrientationCube::CreateThings() {
 }
 
 myOrientationCube::myOrientationCube() {
-	cubeSource = nullptr;
-	mapper = nullptr;
 	actor = nullptr;
 	owner = nullptr;
 	imageLayer = nullptr;

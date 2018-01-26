@@ -8,9 +8,12 @@ public:
 	enum Funcao {MIP, MinP, Composite};
 private:
 	vtkSmartPointer<myLetraRenderPass> letraPass;
-	vtkSmartPointer<vtkCubeSource> cubeSource;
-	vtkSmartPointer<vtkPolyDataMapper> mapper;
-	vtkSmartPointer<vtkActor> actor;
+
+	vtkSmartPointer<vtkActor> cubeActor;
+	std::array<vtkSmartPointer<vtkActor>, 8> handles;
+	
+	vtkSmartPointer<vtkAssembly> actor;
+
 	vtkSmartPointer<vtkActor> testePlano;
 	vtkSmartPointer<vtkImageActor> actorDaImagem;
 	vtkRenderer *owner, *imageLayer;
@@ -25,6 +28,7 @@ private:
 	bool alredyZoomed;
 
 	myOrientationCube();
+	vtkSmartPointer<vtkActor> CreateSphereHandle(vtkSphereSource* src, double x, double y, double z);
 	void CreateThings();
 	void MakeCameraFollowTranslation();
 	void MakeAxisFollowCube();

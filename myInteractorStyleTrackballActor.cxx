@@ -551,6 +551,7 @@ void myInteractorStyleTrackballActor::PrintSelf(ostream& os, vtkIndent indent)
 void myInteractorStyleTrackballActor::FindPickedActor(int x, int y)
 {
 	this->InteractionPicker->Pick(x, y, 0.0, this->CurrentRenderer);
+	vtkAssemblyPath* path = this->InteractionPicker->GetPath();//Isso aqui vai ser necessário qdo eu usar a assembly
 	vtkProp *prop = this->InteractionPicker->GetViewProp();
 	if (prop != nullptr)
 	{

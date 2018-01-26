@@ -33,7 +33,7 @@ int main(int, char *[])
 	///Carga da imagem
 	ObserveLoadProgressCommand::Pointer prog = ObserveLoadProgressCommand::New();
 
-	const std::string txtFile = "C:\\meus dicoms\\abdomem-feet-first";//"C:\\meus dicoms\\Marching Man";//"C:\\meus dicoms\\abdomem-feet-first";//"C:\\meus dicoms\\Marching Man"; //"C:\\meus dicoms\\abdomem-feet-first";
+	const std::string txtFile = "C:\\meus dicoms\\Marching Man";//"C:\\meus dicoms\\abdomem-feet-first";//"C:\\meus dicoms\\Marching Man";//"C:\\meus dicoms\\abdomem-feet-first";//"C:\\meus dicoms\\Marching Man"; //"C:\\meus dicoms\\abdomem-feet-first";
 
 	const std::vector<std::string> lst = GetList(txtFile);
 	std::map<std::string, std::string> metadataDaImagem;

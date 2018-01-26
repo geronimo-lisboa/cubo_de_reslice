@@ -67,4 +67,9 @@
 #include <vtkClipPolyData.h>
 #include <vtkAlgorithmOutput.h>
 #include <vtkPolyData.h>
+#include <vtkAssemblyPath.h>
+#include <vtkAssemblyPaths.h>
+#include <vtkAssemblyNode.h>
+#include <vtkAssembly.h>
+#include <vtkSphereSource.h>
 
