@@ -2,7 +2,7 @@ object Form1: TForm1
   Left = 276
   Top = 279
   Width = 1305
-  Height = 675
+  Height = 682
   Caption = 'Form1'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -36,6 +36,13 @@ object Form1: TForm1
     Width = 529
     Height = 21
     TabOrder = 2
-    Text = 'edtDirDaImagem'
+    Text = 'C:\meus dicoms\abdomem-feet-first'
+  end
+  object progressBar: TProgressBar
+    Left = 0
+    Top = 616
+    Width = 625
+    Height = 17
+    TabOrder = 3
   end
 end
