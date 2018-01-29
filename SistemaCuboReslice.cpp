@@ -129,3 +129,17 @@ int SistemaCuboReslice::RMouseUp(HWND wnd, UINT nFlags, int X, int Y)
 {
 	return renderWindowInteractor->OnRButtonUp(wnd, nFlags, X, Y);
 }
+
+void SistemaCuboReslice::SetThickness(double mm) {
+	cuboDeOrientacao->SetSlabThickness(mm);
+}
+
+void SistemaCuboReslice::Reset()
+{
+	assert(false && "não implementado");
+}
+
+void SistemaCuboReslice::SetOperacaoDeMouse(int qualBotao, int qualOperacao)
+{
+	assert(false && "nao implementado");
+}

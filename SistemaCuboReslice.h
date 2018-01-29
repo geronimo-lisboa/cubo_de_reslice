@@ -51,4 +51,7 @@ public:
 	int MMouseUp(HWND wnd, UINT nFlags, int X, int Y);
 	int RMouseDown(HWND wnd, UINT nFlags, int X, int Y);
 	int RMouseUp(HWND wnd, UINT nFlags, int X, int Y);
+	void SetThickness(double mm);
+	void Reset();
+	void SetOperacaoDeMouse(int qualBotao, int qualOperacao);
 };
