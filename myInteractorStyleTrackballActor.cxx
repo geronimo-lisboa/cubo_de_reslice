@@ -31,6 +31,7 @@ vtkStandardNewMacro(myInteractorStyleTrackballActor);
 void myInteractorStyleTrackballActor::SetWidgetContainerHandle(IMyResliceCubeWidgetGeometryContainer* i) {
 	this->cubeWidgetContainer = i;
 }
+
 //----------------------------------------------------------------------------
 myInteractorStyleTrackballActor::myInteractorStyleTrackballActor()
 {
@@ -558,41 +559,41 @@ void myInteractorStyleTrackballActor::PrintSelf(ostream& os, vtkIndent indent)
 void myInteractorStyleTrackballActor::FindPickedActor(int x, int y)
 {
 	this->InteractionPicker->Pick(x, y, 0.0, this->CurrentRenderer);
-	vtkAssemblyPath* path = this->InteractionPicker->GetPath();//Isso aqui vai ser necessário qdo eu usar a assembly
-	if (path != nullptr) {
-		path->InitTraversal();
-		int numberOfItems = path->GetNumberOfItems();
-		for (auto i = 0; i < numberOfItems; i++) {
-			vtkAssemblyNode *currentNode = path->GetNextNode();
-			vtkProp* nodeProp = currentNode->GetViewProp();
-			vtkActor* actorDoCubo = cubeWidgetContainer->GetCube();
-			//A assembly é o primeiro nó
-			if (nodeProp->IsA("vtkAssembly"))
-			{
-				this->InteractionProp = vtkProp3D::SafeDownCast(nodeProp);
-				continue;
-			}
-			if (nodeProp == actorDoCubo && currentMouseButton == 0) {
-				this->State = VTKIS_ROTATE;
-			}
+	//vtkAssemblyPath* path = this->InteractionPicker->GetPath();//Isso aqui vai ser necessário qdo eu usar a assembly
+	//if (path != nullptr) {
+	//	path->InitTraversal();
+	//	int numberOfItems = path->GetNumberOfItems();
+	//	for (auto i = 0; i < numberOfItems; i++) {
+	//		vtkAssemblyNode *currentNode = path->GetNextNode();
+	//		vtkProp* nodeProp = currentNode->GetViewProp();
+	//		vtkActor* actorDoCubo = cubeWidgetContainer->GetCube();
+	//		//A assembly é o primeiro nó
+	//		if (nodeProp->IsA("vtkAssembly"))
+	//		{
+	//			this->InteractionProp = vtkProp3D::SafeDownCast(nodeProp);
+	//			continue;
+	//		}
+	//		if (nodeProp == actorDoCubo && currentMouseButton == 0) {
+	//			this->State = VTKIS_ROTATE;
+	//		}
 
-			if ((nodeProp == cubeWidgetContainer->GetHandles()[0].GetPointer()) ||
-				(nodeProp == cubeWidgetContainer->GetHandles()[1].GetPointer()) ||
-				(nodeProp == cubeWidgetContainer->GetHandles()[2].GetPointer()) ||
-				(nodeProp == cubeWidgetContainer->GetHandles()[3].GetPointer()) ||
-				(nodeProp == cubeWidgetContainer->GetHandles()[4].GetPointer()) ||
-				(nodeProp == cubeWidgetContainer->GetHandles()[5].GetPointer()) ||
-				(nodeProp == cubeWidgetContainer->GetHandles()[6].GetPointer()) ||
-				(nodeProp == cubeWidgetContainer->GetHandles()[7].GetPointer()) && currentMouseButton == 0)
-			{
-				this->State = VTKIS_SPIN;
-			}
-		}
-	}
-	else {
-		this->InteractionProp = nullptr;
-	}
-	/*vtkProp *prop = this->InteractionPicker->GetViewProp();
+	//		if ((nodeProp == cubeWidgetContainer->GetHandles()[0].GetPointer()) ||
+	//			(nodeProp == cubeWidgetContainer->GetHandles()[1].GetPointer()) ||
+	//			(nodeProp == cubeWidgetContainer->GetHandles()[2].GetPointer()) ||
+	//			(nodeProp == cubeWidgetContainer->GetHandles()[3].GetPointer()) ||
+	//			(nodeProp == cubeWidgetContainer->GetHandles()[4].GetPointer()) ||
+	//			(nodeProp == cubeWidgetContainer->GetHandles()[5].GetPointer()) ||
+	//			(nodeProp == cubeWidgetContainer->GetHandles()[6].GetPointer()) ||
+	//			(nodeProp == cubeWidgetContainer->GetHandles()[7].GetPointer()) && currentMouseButton == 0)
+	//		{
+	//			this->State = VTKIS_SPIN;
+	//		}
+	//	}
+	//}
+	//else {
+	//	this->InteractionProp = nullptr;
+	//}
+	vtkProp *prop = this->InteractionPicker->GetViewProp();
 	if (prop != nullptr)
 	{
 		this->InteractionProp = vtkProp3D::SafeDownCast(prop);
@@ -600,7 +601,7 @@ void myInteractorStyleTrackballActor::FindPickedActor(int x, int y)
 	else
 	{
 		this->InteractionProp = nullptr;
-	}*/
+	}
 }
 
 //----------------------------------------------------------------------------

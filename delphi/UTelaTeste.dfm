@@ -1,7 +1,7 @@
 object Form1: TForm1
   Left = 662
   Top = 177
-  Width = 693
+  Width = 1046
   Height = 822
   Caption = 'Form1'
   Color = clBtnFace
@@ -16,8 +16,8 @@ object Form1: TForm1
   object panelMPRCubo: TPanel
     Left = 8
     Top = 56
-    Width = 617
-    Height = 545
+    Width = 297
+    Height = 185
     Caption = 'panelMPRCubo'
     TabOrder = 0
     OnMouseDown = panelMPRCuboMouseDown
@@ -39,7 +39,7 @@ object Form1: TForm1
     Width = 529
     Height = 21
     TabOrder = 2
-    Text = 'C:\meus dicoms\abdomem-feet-first'
+    Text = 'C:\meus dicoms\Marching Man'
   end
   object progressBar: TProgressBar
     Left = 0
@@ -47,6 +47,15 @@ object Form1: TForm1
     Width = 625
     Height = 17
     TabOrder = 3
+  end
+  object Button1: TButton
+    Left = 64
+    Top = 680
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 4
+    OnClick = Button1Click
   end
   object renderTimer: TTimer
     Enabled = False

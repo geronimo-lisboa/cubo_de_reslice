@@ -15,6 +15,7 @@ type
     edtDirDaImagem: TEdit;
     progressBar: TProgressBar;
     renderTimer: TTimer;
+    Button1: TButton;
     procedure btnIniciarClick(Sender: TObject);
     procedure renderTimerTimer(Sender: TObject);
     procedure panelMPRCuboMouseDown(Sender: TObject; Button: TMouseButton;
@@ -23,6 +24,7 @@ type
       Y: Integer);
     procedure panelMPRCuboMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure Button1Click(Sender: TObject);
   private
     dllHandle: Cardinal;
     procedure loadFunction();
@@ -74,8 +76,6 @@ begin
     DLL_SetCallbackDeCarga(CallbackDoProgessoDeCarga);
     //Carrega a imagem
     DLL_LoadVolume(PChar(edtDirDaImagem.text));
-    //Resize
-    DLL_ResizeRenderer(panelMPRCubo.width-1, panelMPRCubo.height-1);
     btnIniciar.Enabled := false;
     edtDirDaImagem.Enabled := False;
     renderTimer.Enabled := True;
@@ -182,6 +182,14 @@ begin
   if(Button = mbRight)then begin
     DLL_RMouseUp(panelMPRCubo.Handle, 0, X,Y);
   end;
+end;
+
+procedure TForm1.Button1Click(Sender: TObject);
+begin
+//  panelMPRCubo.Width := panelMPRCubo.Width + 100;
+  panelMPRCubo.Width := 600;
+  panelMPRCubo.Height := 600;
+  DLL_ResizeRenderer(600, 600);
 end;
 
 end.

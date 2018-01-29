@@ -48,7 +48,6 @@ void SistemaCuboReslice::CreateRenderer(HWND handle)
 void SistemaCuboReslice::Resize(int w, int h)
 {
 	renderWindow->SetSize(w, h);
-	renderWindow->Render();
 }
 
 void SistemaCuboReslice::Render() {

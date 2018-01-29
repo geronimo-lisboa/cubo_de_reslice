@@ -59,8 +59,8 @@ void myOrientationCube::CreateThings() {
 	
 	actor = vtkSmartPointer<vtkAssembly>::New();
 	actor->AddPart(cubeActor);
-	for (vtkSmartPointer<vtkActor> a : handles)
-		actor->AddPart(a);
+	//for (vtkSmartPointer<vtkActor> a : handles)
+	//	actor->AddPart(a);
 
 	//-------
 	axes2 = vtkSmartPointer<vtkAxesActor>::New();
@@ -103,7 +103,7 @@ void myOrientationCube::SetRenderers(vtkRenderer* imageLayer, vtkRenderer* cubeL
 	this->imageLayer = imageLayer;
 	CreateThings();
 	owner->AddActor(actor);
-	owner->AddActor(axes2);
+	//owner->AddActor(axes2);
 	owner->ResetCamera();
 	owner->AddObserver(vtkCommand::EndEvent, this);
 	owner->AddObserver(vtkCommand::StartEvent, this);
@@ -296,6 +296,8 @@ std::array<double, 3> myOrientationCube::GetNormal()
 		} };
 	return n;
 }
+
+
 
 void myOrientationCube::DebugSave() {
 #ifndef NDEBUG

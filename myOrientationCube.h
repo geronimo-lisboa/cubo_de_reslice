@@ -52,4 +52,6 @@ public:
 	std::array<double, 3> GetCenter() override;
 	std::array<double, 6> GetBounds() override;
 	std::array<double, 3> GetNormal() override;
+
+	
 };

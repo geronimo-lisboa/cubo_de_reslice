@@ -75,6 +75,8 @@ public:
 	void UniformScale() override;
 
 	void SetWidgetContainerHandle(IMyResliceCubeWidgetGeometryContainer* i);
+	//0 = PAN, 1 = ROTATE, 2 = SPIN 
+
 protected:
 	myInteractorStyleTrackballActor();
 	~myInteractorStyleTrackballActor() override;
