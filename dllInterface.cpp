@@ -17,7 +17,7 @@ void _stdcall DLL_LoadVolume(const char* pathToFile) {
 
 }
 
-void _stdcall DLL_SetThickness(int t) {
+void _stdcall DLL_SetThickness(double t) {
 
 }
 

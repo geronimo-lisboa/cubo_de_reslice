@@ -8,7 +8,7 @@ extern "C" {
 	DLL_INTERFACE void _stdcall DLL_ResizeRenderer(int w, int h);
 	DLL_INTERFACE void _stdcall DLL_SetCallbackDeCarga(FNCallbackDeCarga cbk);
 	DLL_INTERFACE void _stdcall DLL_LoadVolume(const char* pathToFile);
-	DLL_INTERFACE void _stdcall DLL_SetThickness(int t);
+	DLL_INTERFACE void _stdcall DLL_SetThickness(double t);
 	DLL_INTERFACE void _stdcall DLL_SetFuncao(int idFuncao);
 
 	DLL_INTERFACE void _stdcall DLL_Reset();

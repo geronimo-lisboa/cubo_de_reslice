@@ -1,6 +1,6 @@
 object Form1: TForm1
-  Left = 275
-  Top = 168
+  Left = 276
+  Top = 279
   Width = 1305
   Height = 675
   Caption = 'Form1'
@@ -13,4 +13,29 @@ object Form1: TForm1
   OldCreateOrder = False
   PixelsPerInch = 96
   TextHeight = 13
+  object panelMPRCubo: TPanel
+    Left = 8
+    Top = 64
+    Width = 617
+    Height = 545
+    Caption = 'panelMPRCubo'
+    TabOrder = 0
+  end
+  object btnIniciar: TButton
+    Left = 0
+    Top = 0
+    Width = 75
+    Height = 25
+    Caption = 'btnIniciar'
+    TabOrder = 1
+    OnClick = btnIniciarClick
+  end
+  object edtDirDaImagem: TEdit
+    Left = 96
+    Top = 0
+    Width = 529
+    Height = 21
+    TabOrder = 2
+    Text = 'edtDirDaImagem'
+  end
 end
