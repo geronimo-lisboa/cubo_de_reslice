@@ -10,7 +10,7 @@ extern "C" {
 	DLL_INTERFACE void _stdcall DLL_LoadVolume(const char* pathToFile);
 	DLL_INTERFACE void _stdcall DLL_SetThickness(double t);
 	DLL_INTERFACE void _stdcall DLL_SetFuncao(int idFuncao);
-
+	DLL_INTERFACE void _stdcall DLL_Render();
 	DLL_INTERFACE void _stdcall DLL_Reset();
 
 	DLL_INTERFACE void _stdcall DLL_SetOperacaoDoMouse(int qualBotao, int qualOperacao);

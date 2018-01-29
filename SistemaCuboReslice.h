@@ -54,4 +54,5 @@ public:
 	void SetThickness(double mm);
 	void Reset();
 	void SetOperacaoDeMouse(int qualBotao, int qualOperacao);
+	void Render();
 };

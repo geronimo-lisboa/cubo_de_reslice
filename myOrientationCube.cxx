@@ -23,7 +23,8 @@ vtkSmartPointer<vtkActor> myOrientationCube::CreateSphereHandle(vtkSphereSource*
 	handleActor->SetMapper(shMapper);
 	handleActor->GetProperty()->BackfaceCullingOff();
 	handleActor->GetProperty()->SetColor(0, 1, 0);
-	handleActor->GetProperty()->LightingOff();
+	handleActor->PickableOn();
+	//handleActor->GetProperty()->LightingOff();
 	handleActor->SetPosition(x, y, z);
 	return handleActor;
 }
@@ -298,13 +299,13 @@ std::array<double, 3> myOrientationCube::GetNormal()
 
 void myOrientationCube::DebugSave() {
 #ifndef NDEBUG
-	boost::posix_time::ptime current_date_microseconds = boost::posix_time::microsec_clock::local_time();
-	long milliseconds = current_date_microseconds.time_of_day().total_milliseconds();
-	std::string filename = "c:\\mprcubo\\dump\\" + boost::lexical_cast<std::string>(milliseconds) + ".vti";
-	vtkSmartPointer<vtkXMLImageDataWriter> debugsave = vtkSmartPointer<vtkXMLImageDataWriter>::New();
-	debugsave->SetFileName(filename.c_str());
-	debugsave->SetInputData(thickSlabReslice->GetOutput());
-	debugsave->BreakOnError();
-	debugsave->Write();
+	//boost::posix_time::ptime current_date_microseconds = boost::posix_time::microsec_clock::local_time();
+	//long milliseconds = current_date_microseconds.time_of_day().total_milliseconds();
+	//std::string filename = "c:\\mprcubo\\dump\\" + boost::lexical_cast<std::string>(milliseconds) + ".vti";
+	//vtkSmartPointer<vtkXMLImageDataWriter> debugsave = vtkSmartPointer<vtkXMLImageDataWriter>::New();
+	//debugsave->SetFileName(filename.c_str());
+	//debugsave->SetInputData(thickSlabReslice->GetOutput());
+	//debugsave->BreakOnError();
+	//debugsave->Write();
 #endif
 }

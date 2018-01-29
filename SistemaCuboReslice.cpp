@@ -51,6 +51,10 @@ void SistemaCuboReslice::Resize(int w, int h)
 	renderWindow->Render();
 }
 
+void SistemaCuboReslice::Render() {
+	renderWindow->Render();
+}
+
 void SistemaCuboReslice::SetImage(itk::Image<short, 3>::Pointer img)
 {
 	imagemOriginal = img;

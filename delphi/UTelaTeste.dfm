@@ -1,8 +1,8 @@
 object Form1: TForm1
-  Left = 276
-  Top = 279
-  Width = 1305
-  Height = 682
+  Left = 662
+  Top = 177
+  Width = 693
+  Height = 822
   Caption = 'Form1'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -15,11 +15,14 @@ object Form1: TForm1
   TextHeight = 13
   object panelMPRCubo: TPanel
     Left = 8
-    Top = 64
+    Top = 56
     Width = 617
     Height = 545
     Caption = 'panelMPRCubo'
     TabOrder = 0
+    OnMouseDown = panelMPRCuboMouseDown
+    OnMouseMove = panelMPRCuboMouseMove
+    OnMouseUp = panelMPRCuboMouseUp
   end
   object btnIniciar: TButton
     Left = 0
@@ -40,9 +43,16 @@ object Form1: TForm1
   end
   object progressBar: TProgressBar
     Left = 0
-    Top = 616
+    Top = 24
     Width = 625
     Height = 17
     TabOrder = 3
+  end
+  object renderTimer: TTimer
+    Enabled = False
+    Interval = 200
+    OnTimer = renderTimerTimer
+    Left = 136
+    Top = 64
   end
 end

@@ -63,6 +63,10 @@ void _stdcall DLL_LoadVolume(const char* pathToFile) {
 	sistema->SetImage(imagemOriginal);
 }
 
+void _stdcall DLL_Render() {
+	sistema->Render();
+}
+
 void _stdcall DLL_SetThickness(double t) {
 	sistema->SetThickness(t);
 }
@@ -77,33 +81,41 @@ void _stdcall DLL_Reset() {
 }
 
 void _stdcall DLL_SetOperacaoDoMouse(int qualBotao, int qualOperacao) {
+	if(sistema)
 	sistema->SetOperacaoDeMouse(qualBotao, qualOperacao);
 }
 
 int _stdcall DLL_MouseMove(HWND wnd, UINT nFlags, int X, int Y) {
+	if (sistema)
 	return sistema->MouseMove(wnd, nFlags, X, Y);
 }
 
 int _stdcall DLL_LMouseDown(HWND wnd, UINT nFlags, int X, int Y) {
+	if (sistema)
 	return sistema->LMouseDown(wnd, nFlags, X, Y);
 }
 
 int _stdcall DLL_LMouseUp(HWND wnd, UINT nFlags, int X, int Y) {
+	if (sistema)
 	return sistema->LMouseUp(wnd, nFlags, X, Y);
 }
 
 int _stdcall DLL_MMouseDown(HWND wnd, UINT nFlags, int X, int Y) {
+	if (sistema)
 	return sistema->MMouseDown(wnd, nFlags, X, Y);
 }
 
 int _stdcall DLL_MMouseUp(HWND wnd, UINT nFlags, int X, int Y) {
+	if (sistema)
 	return sistema->MMouseUp(wnd, nFlags, X, Y);
 }
 
 int _stdcall DLL_RMouseDown(HWND wnd, UINT nFlags, int X, int Y) {
+	if (sistema)
 	return sistema->RMouseDown(wnd, nFlags, X, Y);
 }
 
 int _stdcall DLL_RMouseUp(HWND wnd, UINT nFlags, int X, int Y) {
+	if (sistema)
 	return sistema->RMouseUp(wnd, nFlags, X, Y);
 }

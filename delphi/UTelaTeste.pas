@@ -14,7 +14,15 @@ type
     btnIniciar: TButton;
     edtDirDaImagem: TEdit;
     progressBar: TProgressBar;
+    renderTimer: TTimer;
     procedure btnIniciarClick(Sender: TObject);
+    procedure renderTimerTimer(Sender: TObject);
+    procedure panelMPRCuboMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure panelMPRCuboMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
+    procedure panelMPRCuboMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   private
     dllHandle: Cardinal;
     procedure loadFunction();
@@ -27,6 +35,7 @@ type
 	DLL_SetFuncao : procedure(idFuncao:integer);stdcall;
   DLL_Reset : procedure();stdcall;
   DLL_SetOperacaoDoMouse : procedure(qualBotao, qualOperacao:integer);stdcall;
+  DLL_Render : procedure();stdcall;
 
 	DLL_MouseMove:function(wnd:hwnd; nFlags:longword; X,Y:integer):integer;stdcall;
 	DLL_LMouseDown:function(wnd:hwnd; nFlags:longword; X,Y:integer):integer;stdcall;
@@ -63,13 +72,13 @@ begin
     DLL_CreateRenderer(panelMPRCubo.handle);
     //Seta o callback da carga
     DLL_SetCallbackDeCarga(CallbackDoProgessoDeCarga);
-    //Resize
-    DLL_ResizeRenderer(panelMPRCubo.width, panelMPRCubo.height);
     //Carrega a imagem
     DLL_LoadVolume(PChar(edtDirDaImagem.text));
-
+    //Resize
+    DLL_ResizeRenderer(panelMPRCubo.width-1, panelMPRCubo.height-1);
     btnIniciar.Enabled := false;
     edtDirDaImagem.Enabled := False;
+    renderTimer.Enabled := True;
   except
     on e:Exception do
     begin
@@ -125,6 +134,54 @@ begin
 
 	DLL_RMouseUp:= GetProcAddress(dllHandle, '_DLL_RMouseUp@16');
   if(Assigned(DLL_RMouseUp)=False)then raise Exception.Create('DLL_RMouseUp');
+
+  DLL_Render := GetProcAddress(dllHandle, '_DLL_Render@0');
+  if(Assigned(DLL_Render)=False)then raise Exception.Create('DLL_Render');
+end;
+
+procedure TForm1.renderTimerTimer(Sender: TObject);
+begin
+  DLL_Render();
+end;
+
+procedure TForm1.panelMPRCuboMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  if (Assigned(DLL_LMouseDown)=false)then
+    Exit;
+  if(Button = mbLeft)then begin
+    DLL_LMouseDown(panelMPRCubo.Handle, 0, X,Y);
+  end;
+  if(Button = mbMiddle)then begin
+    DLL_MMouseDown(panelMPRCubo.Handle, 0, X,Y);
+  end;
+  if(Button = mbRight)then begin
+    DLL_RMouseDown(panelMPRCubo.Handle, 0, X,Y);
+  end;
+end;
+
+procedure TForm1.panelMPRCuboMouseMove(Sender: TObject; Shift: TShiftState;
+  X, Y: Integer);
+begin
+  if (Assigned(DLL_LMouseDown)=false)then
+    Exit;
+  DLL_MouseMove(panelMPRCubo.Handle, 0, X,Y);
+end;
+
+procedure TForm1.panelMPRCuboMouseUp(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if (Assigned(DLL_LMouseDown)=false)then
+    Exit;
+  if(Button = mbLeft)then begin
+    DLL_LMouseUp(panelMPRCubo.Handle, 0, X,Y);
+  end;
+  if(Button = mbMiddle)then begin
+    DLL_MMouseUp(panelMPRCubo.Handle, 0, X,Y);
+  end;
+  if(Button = mbRight)then begin
+    DLL_RMouseUp(panelMPRCubo.Handle, 0, X,Y);
+  end;
 end;
 
 end.
