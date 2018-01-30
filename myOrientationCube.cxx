@@ -94,7 +94,6 @@ myOrientationCube::myOrientationCube() {
 	letraPass = nullptr;
 	alredyReset = nullptr;
 	alredyZoomed = nullptr;
-
 }
 
 void myOrientationCube::SetRenderers(vtkRenderer* imageLayer, vtkRenderer* cubeLayer) {
@@ -297,7 +296,27 @@ std::array<double, 3> myOrientationCube::GetNormal()
 	return n;
 }
 
+void myOrientationCube::SaveDataSnapshot()
+{
+	
+	DataSnapshot s = { actor->GetMatrix() ,
+					  { { actor->GetOrientationWXYZ()[0],actor->GetOrientationWXYZ()[1],actor->GetOrientationWXYZ()[2],actor->GetOrientationWXYZ()[3],}},
+				      { { actor->GetCenter()[0],actor->GetCenter()[1], actor->GetCenter()[2] } } 
+					 };
+	dataSnapshots.push_back(s);
+}
 
+myOrientationCube::DataSnapshot myOrientationCube::GetFirstState()
+{
+	return dataSnapshots[0];
+}
+
+void myOrientationCube::SetState(DataSnapshot s)
+{
+	actor->SetPosition(s.center.data());
+	actor->SetOrientation(s.orientationWXYZ.data());
+	UpdateReslice();
+}
 
 void myOrientationCube::DebugSave() {
 #ifndef NDEBUG

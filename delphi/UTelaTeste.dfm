@@ -69,32 +69,23 @@ object Form1: TForm1
     Height = 17
     TabOrder = 3
   end
-  object Button1: TButton
-    Left = 8
-    Top = 752
-    Width = 75
-    Height = 25
-    Caption = 'Button1'
-    TabOrder = 4
-    OnClick = Button1Click
-  end
   object cbkBtnEsq: TComboBox
     Left = 35
     Top = 53
     Width = 145
     Height = 21
     ItemHeight = 13
-    ItemIndex = 0
-    TabOrder = 5
+    TabOrder = 4
     Text = 'VTKIS_NONE'
     OnChange = cbkBtnEsqChange
     Items.Strings = (
       'VTKIS_NONE'
       'VTKIS_ROTATE'
       'VTKIS_PAN'
-      'VTKIS_DOLLY'
       'VTKIS_SPIN'
-      'VTKIS_USCALE')
+      'VTKIS_DOLLY'
+      ''
+      '')
   end
   object cbbBtnMid: TComboBox
     Left = 211
@@ -102,17 +93,15 @@ object Form1: TForm1
     Width = 145
     Height = 21
     ItemHeight = 13
-    ItemIndex = 0
-    TabOrder = 6
+    TabOrder = 5
     Text = 'VTKIS_NONE'
     OnChange = cbbBtnMidChange
     Items.Strings = (
       'VTKIS_NONE'
       'VTKIS_ROTATE'
       'VTKIS_PAN'
-      'VTKIS_DOLLY'
       'VTKIS_SPIN'
-      'VTKIS_USCALE')
+      'VTKIS_DOLLY')
   end
   object cbbBtnDir: TComboBox
     Left = 387
@@ -120,17 +109,24 @@ object Form1: TForm1
     Width = 145
     Height = 21
     ItemHeight = 13
-    ItemIndex = 0
-    TabOrder = 7
+    TabOrder = 6
     Text = 'VTKIS_NONE'
     OnChange = cbbBtnDirChange
     Items.Strings = (
       'VTKIS_NONE'
       'VTKIS_ROTATE'
       'VTKIS_PAN'
-      'VTKIS_DOLLY'
       'VTKIS_SPIN'
-      'VTKIS_USCALE')
+      'VTKIS_DOLLY')
+  end
+  object btnReset: TButton
+    Left = 0
+    Top = 752
+    Width = 75
+    Height = 25
+    Caption = 'btnReset'
+    TabOrder = 7
+    OnClick = btnResetClick
   end
   object renderTimer: TTimer
     Enabled = False

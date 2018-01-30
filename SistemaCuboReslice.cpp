@@ -65,6 +65,8 @@ void SistemaCuboReslice::SetImage(itk::Image<short, 3>::Pointer img)
 	cuboDeOrientacao->SetImage(imagemImportadaPraVTK);
 	style->SetWidgetContainerHandle(cuboDeOrientacao);
 	renderWindow->Render();
+	//Guarda os dados iniciais:
+	cuboDeOrientacao->SaveDataSnapshot();
 }
 
 void SistemaCuboReslice::SetFuncao(int idFn)
@@ -139,7 +141,9 @@ void SistemaCuboReslice::SetThickness(double mm) {
 
 void SistemaCuboReslice::Reset()
 {
-	assert(false && "não implementado");
+	myOrientationCube::DataSnapshot d = cuboDeOrientacao->GetFirstState();
+	cuboDeOrientacao->SetState(d);
+	renderWindow->Render();
 }
 
 void SistemaCuboReslice::SetOperacaoDeMouse(int qualBotao, int qualOperacao)

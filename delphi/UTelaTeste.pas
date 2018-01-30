@@ -15,13 +15,13 @@ type
     edtDirDaImagem: TEdit;
     progressBar: TProgressBar;
     renderTimer: TTimer;
-    Button1: TButton;
     lbl1: TLabel;
     cbkBtnEsq: TComboBox;
     cbbBtnMid: TComboBox;
     lbl2: TLabel;
     cbbBtnDir: TComboBox;
     lbl3: TLabel;
+    btnReset: TButton;
     procedure btnIniciarClick(Sender: TObject);
     procedure renderTimerTimer(Sender: TObject);
     procedure panelMPRCuboMouseDown(Sender: TObject; Button: TMouseButton;
@@ -34,6 +34,7 @@ type
     procedure cbkBtnEsqChange(Sender: TObject);
     procedure cbbBtnMidChange(Sender: TObject);
     procedure cbbBtnDirChange(Sender: TObject);
+    procedure btnResetClick(Sender: TObject);
   private
     dllHandle: Cardinal;
     procedure loadFunction();
@@ -217,6 +218,12 @@ procedure TForm1.cbbBtnDirChange(Sender: TObject);
 begin
   if(Assigned(DLL_SetOperacaoDoMouse))then
     DLL_SetOperacaoDoMouse(2,cbbBtnDir.ItemIndex);
+end;
+
+procedure TForm1.btnResetClick(Sender: TObject);
+begin
+  if(Assigned(DLL_Reset))then
+    DLL_Reset();
 end;
 
 end.

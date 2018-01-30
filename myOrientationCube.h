@@ -8,27 +8,28 @@ class myOrientationCube : public vtkCommand, public IMyResliceCubeWidgetGeometry
 public:
 	enum Interpolacao { NearestNeighbour, Linear, Cubic };
 	enum Funcao {MIP, MinP, Composite};
+	struct DataSnapshot {
+		vtkSmartPointer<vtkMatrix4x4> mat;
+		std::array<double, 4> orientationWXYZ;
+		std::array<double, 3> center;
+	};
 private:
+
 	vtkSmartPointer<myLetraRenderPass> letraPass;
-
 	vtkSmartPointer<vtkActor> cubeActor;
-	std::array<vtkSmartPointer<vtkActor>, 8> handles;
-	
+	std::array<vtkSmartPointer<vtkActor>, 8> handles;	
 	vtkSmartPointer<vtkAssembly> actor;
-
 	vtkSmartPointer<vtkActor> testePlano;
 	vtkSmartPointer<vtkImageActor> actorDaImagem;
 	vtkRenderer *owner, *imageLayer;
 	vtkSmartPointer<vtkAxesActor> axes2;
 	vtkSmartPointer<vtkImageImport> image;
 	vtkSmartPointer<vtkImageSlabReslice> thickSlabReslice;
-
 	double thickness;
 	Interpolacao tipoInterpolacao;
 	Funcao tipoFuncao;
 	bool alredyReset;
 	bool alredyZoomed;
-
 	myOrientationCube();
 	vtkSmartPointer<vtkActor> CreateSphereHandle(vtkSphereSource* src, double x, double y, double z);
 	void CreateThings();
@@ -37,6 +38,8 @@ private:
 	void UpdateReslice();
 	void CreatePipeline();
 	void DebugSave();
+	std::vector<DataSnapshot> dataSnapshots;
+
 public:	
 	static myOrientationCube* New();
 	void SetRenderers(vtkRenderer* imageLayer, vtkRenderer* cubeLayer);
@@ -52,6 +55,8 @@ public:
 	std::array<double, 3> GetCenter() override;
 	std::array<double, 6> GetBounds() override;
 	std::array<double, 3> GetNormal() override;
-
 	
+	void SaveDataSnapshot();
+	DataSnapshot GetFirstState();
+	void SetState(DataSnapshot s);
 };
