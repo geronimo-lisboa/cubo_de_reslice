@@ -75,8 +75,8 @@ public:
 	void UniformScale() override;
 
 	void SetWidgetContainerHandle(IMyResliceCubeWidgetGeometryContainer* i);
-	//0 = PAN, 1 = ROTATE, 2 = SPIN 
 
+	void SetOperacao(int idBotao, int operacao);
 protected:
 	myInteractorStyleTrackballActor();
 	~myInteractorStyleTrackballActor() override;
@@ -93,7 +93,8 @@ protected:
 	int currentMouseButton;
 	vtkProp3D *InteractionProp;
 	vtkCellPicker *InteractionPicker;
-
+	std::array<int, 3> OperacoesDoMouse;
+	int isMousePressed;
 private:
 	IMyResliceCubeWidgetGeometryContainer* cubeWidgetContainer;
 	myInteractorStyleTrackballActor(const myInteractorStyleTrackballActor&) = delete;

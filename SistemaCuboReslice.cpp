@@ -144,5 +144,5 @@ void SistemaCuboReslice::Reset()
 
 void SistemaCuboReslice::SetOperacaoDeMouse(int qualBotao, int qualOperacao)
 {
-	assert(false && "nao implementado");
+	style->SetOperacao(qualBotao, qualOperacao);
 }

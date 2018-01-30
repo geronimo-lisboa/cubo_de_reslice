@@ -32,6 +32,11 @@ void myInteractorStyleTrackballActor::SetWidgetContainerHandle(IMyResliceCubeWid
 	this->cubeWidgetContainer = i;
 }
 
+void myInteractorStyleTrackballActor::SetOperacao(int idBotao, int operacao)
+{
+	OperacoesDoMouse[idBotao] = operacao;
+}
+
 //----------------------------------------------------------------------------
 myInteractorStyleTrackballActor::myInteractorStyleTrackballActor()
 {
@@ -41,6 +46,10 @@ myInteractorStyleTrackballActor::myInteractorStyleTrackballActor()
 	this->InteractionPicker->SetTolerance(0.001);
 	this->cubeWidgetContainer = nullptr;
 	this->currentMouseButton = 0;
+	OperacoesDoMouse[0] = VTKIS_ROTATE;
+	OperacoesDoMouse[1] = VTKIS_PAN;
+	OperacoesDoMouse[2] = VTKIS_SPIN;
+	isMousePressed = false;
 }
 
 //----------------------------------------------------------------------------
@@ -54,6 +63,10 @@ void myInteractorStyleTrackballActor::OnMouseMove()
 {
 	int x = this->Interactor->GetEventPosition()[0];
 	int y = this->Interactor->GetEventPosition()[1];
+
+	if (!isMousePressed)
+		return;
+	this->State = OperacoesDoMouse[currentMouseButton];
 	switch (this->State)
 	{
 	case VTKIS_ROTATE:
@@ -102,36 +115,49 @@ void myInteractorStyleTrackballActor::OnLeftButtonDown()
 		return;
 	}
 
+	this->State = OperacoesDoMouse[currentMouseButton];
 	this->GrabFocus(this->EventCallbackCommand);
-	if (this->Interactor->GetShiftKey())
+	switch (this->State)
 	{
-		this->StartPan();
-	}
-	else if (this->Interactor->GetControlKey())
-	{
-		this->StartSpin();
-	}
-	else
-	{
+	case VTKIS_ROTATE:
 		this->StartRotate();
+		break;
+	case VTKIS_PAN:
+		this->StartPan();
+		break;
+	case VTKIS_DOLLY:
+		this->StartDolly();
+		break;
+	case VTKIS_SPIN:
+		this->StartSpin();
+		break;
+	case VTKIS_USCALE:
+		this->StartUniformScale();
+		break;
 	}
+	isMousePressed = true;
 }
 
 //----------------------------------------------------------------------------
 void myInteractorStyleTrackballActor::OnLeftButtonUp()
 {
+	this->State = OperacoesDoMouse[currentMouseButton];
 	switch (this->State)
 	{
+	case VTKIS_ROTATE:
+		this->EndRotate();
+		break;
 	case VTKIS_PAN:
 		this->EndPan();
 		break;
-
+	case VTKIS_DOLLY:
+		this->EndDolly();
+		break;
 	case VTKIS_SPIN:
 		this->EndSpin();
 		break;
-
-	case VTKIS_ROTATE:
-		this->EndRotate();
+	case VTKIS_USCALE:
+		this->EndUniformScale();
 		break;
 	}
 
@@ -139,6 +165,7 @@ void myInteractorStyleTrackballActor::OnLeftButtonUp()
 	{
 		this->ReleaseFocus();
 	}
+	isMousePressed = false;
 }
 
 //----------------------------------------------------------------------------
@@ -156,27 +183,49 @@ void myInteractorStyleTrackballActor::OnMiddleButtonDown()
 	}
 
 	this->GrabFocus(this->EventCallbackCommand);
-	if (this->Interactor->GetControlKey())
+
+	this->State = OperacoesDoMouse[currentMouseButton];
+	switch (this->State)
 	{
-		this->StartDolly();
-	}
-	else
-	{
+	case VTKIS_ROTATE:
+		this->StartRotate();
+		break;
+	case VTKIS_PAN:
 		this->StartPan();
+		break;
+	case VTKIS_DOLLY:
+		this->StartDolly();
+		break;
+	case VTKIS_SPIN:
+		this->StartSpin();
+		break;
+	case VTKIS_USCALE:
+		this->StartUniformScale();
+		break;
 	}
+	isMousePressed = true;
 }
 
 //----------------------------------------------------------------------------
 void myInteractorStyleTrackballActor::OnMiddleButtonUp()
 {
+	this->State = OperacoesDoMouse[currentMouseButton];
 	switch (this->State)
 	{
+	case VTKIS_ROTATE:
+		this->EndRotate();
+		break;
+	case VTKIS_PAN:
+		this->EndPan();
+		break;
 	case VTKIS_DOLLY:
 		this->EndDolly();
 		break;
-
-	case VTKIS_PAN:
-		this->EndPan();
+	case VTKIS_SPIN:
+		this->EndSpin();
+		break;
+	case VTKIS_USCALE:
+		this->EndUniformScale();
 		break;
 	}
 
@@ -184,6 +233,7 @@ void myInteractorStyleTrackballActor::OnMiddleButtonUp()
 	{
 		this->ReleaseFocus();
 	}
+	isMousePressed = false;
 }
 
 //----------------------------------------------------------------------------
@@ -201,14 +251,47 @@ void myInteractorStyleTrackballActor::OnRightButtonDown()
 	}
 
 	this->GrabFocus(this->EventCallbackCommand);
-	this->StartUniformScale();
+	this->State = OperacoesDoMouse[currentMouseButton];
+	switch (this->State)
+	{
+	case VTKIS_ROTATE:
+		this->StartRotate();
+		break;
+	case VTKIS_PAN:
+		this->StartPan();
+		break;
+	case VTKIS_DOLLY:
+		this->StartDolly();
+		break;
+	case VTKIS_SPIN:
+		this->StartSpin();
+		break;
+	case VTKIS_USCALE:
+		this->StartUniformScale();
+		break;
+	}
+	isMousePressed = true;
+
 }
 
 //----------------------------------------------------------------------------
 void myInteractorStyleTrackballActor::OnRightButtonUp()
 {
+	this->State = OperacoesDoMouse[currentMouseButton];
 	switch (this->State)
 	{
+	case VTKIS_ROTATE:
+		this->EndRotate();
+		break;
+	case VTKIS_PAN:
+		this->EndPan();
+		break;
+	case VTKIS_DOLLY:
+		this->EndDolly();
+		break;
+	case VTKIS_SPIN:
+		this->EndSpin();
+		break;
 	case VTKIS_USCALE:
 		this->EndUniformScale();
 		break;
@@ -218,6 +301,7 @@ void myInteractorStyleTrackballActor::OnRightButtonUp()
 	{
 		this->ReleaseFocus();
 	}
+	isMousePressed = false;
 }
 
 //----------------------------------------------------------------------------

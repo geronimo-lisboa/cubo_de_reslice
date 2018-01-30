@@ -16,6 +16,12 @@ type
     progressBar: TProgressBar;
     renderTimer: TTimer;
     Button1: TButton;
+    lbl1: TLabel;
+    cbkBtnEsq: TComboBox;
+    cbbBtnMid: TComboBox;
+    lbl2: TLabel;
+    cbbBtnDir: TComboBox;
+    lbl3: TLabel;
     procedure btnIniciarClick(Sender: TObject);
     procedure renderTimerTimer(Sender: TObject);
     procedure panelMPRCuboMouseDown(Sender: TObject; Button: TMouseButton;
@@ -25,6 +31,9 @@ type
     procedure panelMPRCuboMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure Button1Click(Sender: TObject);
+    procedure cbkBtnEsqChange(Sender: TObject);
+    procedure cbbBtnMidChange(Sender: TObject);
+    procedure cbbBtnDirChange(Sender: TObject);
   private
     dllHandle: Cardinal;
     procedure loadFunction();
@@ -190,6 +199,24 @@ begin
   panelMPRCubo.Width := 600;
   panelMPRCubo.Height := 600;
   DLL_ResizeRenderer(600, 600);
+end;
+
+procedure TForm1.cbkBtnEsqChange(Sender: TObject);
+begin
+  if(Assigned(DLL_SetOperacaoDoMouse))then
+    DLL_SetOperacaoDoMouse(0,cbkBtnEsq.ItemIndex);
+end;
+
+procedure TForm1.cbbBtnMidChange(Sender: TObject);
+begin
+  if(Assigned(DLL_SetOperacaoDoMouse))then
+    DLL_SetOperacaoDoMouse(1,cbbBtnMid.ItemIndex);
+end;
+
+procedure TForm1.cbbBtnDirChange(Sender: TObject);
+begin
+  if(Assigned(DLL_SetOperacaoDoMouse))then
+    DLL_SetOperacaoDoMouse(2,cbbBtnDir.ItemIndex);
 end;
 
 end.
