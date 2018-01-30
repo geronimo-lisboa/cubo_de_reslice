@@ -94,6 +94,7 @@ myOrientationCube::myOrientationCube() {
 	letraPass = nullptr;
 	alredyReset = nullptr;
 	alredyZoomed = nullptr;
+	callbackDeReslice = nullptr;
 }
 
 void myOrientationCube::SetRenderers(vtkRenderer* imageLayer, vtkRenderer* cubeLayer) {
@@ -202,10 +203,7 @@ void myOrientationCube::UpdateReslice() {
 	thickSlabReslice->Update();
 	vtkImageData* resultado = thickSlabReslice->GetOutput();
 	assert(resultado->GetExtent()[1] != -1);
-
-
 	////Bota na tela
-
 	if (!alredyReset)
 		imageLayer->ResetCamera();
 	alredyReset = true;
@@ -214,12 +212,28 @@ void myOrientationCube::UpdateReslice() {
 	alredyZoomed = true;
 	
 	std::array<double, 4> orientation = { {actor->GetOrientationWXYZ()[0], actor->GetOrientationWXYZ()[1], actor->GetOrientationWXYZ()[2], actor->GetOrientationWXYZ()[3]} };
-	
-	std::array<double, 3> u = { {actor->GetMatrix()->Element[0][0], actor->GetMatrix()->Element[1][0], actor->GetMatrix()->Element[2][0]} };
-	std::array<double, 3> v = { { actor->GetMatrix()->Element[0][1], actor->GetMatrix()->Element[1][1], actor->GetMatrix()->Element[2][1] } };
 	letraPass->Calculate(orientation);
-
+	//Salva debug
 	DebugSave();
+	//Manda pro delphi
+	auto flipper = vtkSmartPointer<vtkImageFlip>::New();
+	flipper->SetInputConnection(thickSlabReslice->GetOutputPort());
+	flipper->SetFilteredAxis(1);
+	flipper->Update();
+	ImageDataToDelphi data;
+	memcpy(data.spacing, flipper->GetOutput()->GetSpacing(), 3 * sizeof(double));//spacing
+	memcpy(data.physicalOrigin, flipper->GetOutput()->GetOrigin(), sizeof(double) * 3);//origin
+	const std::array<double, 3> u = { { actor->GetMatrix()->Element[0][0], actor->GetMatrix()->Element[1][0], actor->GetMatrix()->Element[2][0] } };
+	const std::array<double, 3> v = { { actor->GetMatrix()->Element[0][1], actor->GetMatrix()->Element[1][1], actor->GetMatrix()->Element[2][1] } };
+	memcpy(data.uVector, u.data(), sizeof(double) * 3);//Direction cosine horizontal da imagem
+	memcpy(data.vVector, v.data(), sizeof(double) * 3);//Direction cosine Vertical da imagem
+	memcpy(data.imageSize, flipper->GetOutput()->GetDimensions(), sizeof(int) * 2);//Tamanho dos lados da imagem em pixels
+	data.bufferSize = data.imageSize[0] * data.imageSize[1] * sizeof(short);//Tamanho do buffer em bytes
+	short *buffer = new short[data.imageSize[0] * data.imageSize[1]];
+	memcpy(buffer, flipper->GetOutput()->GetScalarPointer(), data.bufferSize);//O buffer
+	data.bufferData = buffer;
+	//Manda os dados pro delphi
+	callbackDeReslice(data);
 }
 
 void myOrientationCube::Execute(vtkObject * caller, unsigned long ev, void * calldata)
@@ -318,6 +332,11 @@ void myOrientationCube::SetState(DataSnapshot s)
 	actor->SetPosition(s.center.data());
 	actor->SetOrientation(s.orientationWXYZ.data());
 	UpdateReslice();
+}
+
+void myOrientationCube::SetCallbackDeReslice(FNCallbackDoDicomReslice cbk)
+{
+	this->callbackDeReslice = cbk;
 }
 
 void myOrientationCube::DebugSave() {

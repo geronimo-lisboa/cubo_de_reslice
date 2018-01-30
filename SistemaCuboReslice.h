@@ -13,7 +13,7 @@ private:
 	vtkSmartPointer<myInteractorStyleTrackballActor> style;
 	vtkSmartPointer<vtkImageImport> imagemImportadaPraVTK;
 	itk::Image<short, 3>::Pointer imagemOriginal;
-
+	FNCallbackDoDicomReslice callbackDeReslice;
 	static inline vtkImageImport* CreateVTKImage(itk::Image<short, 3>::Pointer img)
 	{
 		int szX = img->GetLargestPossibleRegion().GetSize()[0];
@@ -55,4 +55,5 @@ public:
 	void Reset();
 	void SetOperacaoDeMouse(int qualBotao, int qualOperacao);
 	void Render();
+	void SetCallbackDeReslice(FNCallbackDoDicomReslice cbk);
 };

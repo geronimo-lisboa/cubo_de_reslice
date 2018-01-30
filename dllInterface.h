@@ -22,4 +22,7 @@ extern "C" {
 	DLL_INTERFACE int _stdcall DLL_MMouseUp(HWND wnd, UINT nFlags, int X, int Y);
 	DLL_INTERFACE int _stdcall DLL_RMouseDown(HWND wnd, UINT nFlags, int X, int Y);
 	DLL_INTERFACE int _stdcall DLL_RMouseUp(HWND wnd, UINT nFlags, int X, int Y);
+
+	DLL_INTERFACE void _stdcall DLL_SetCallbackDoReslice(FNCallbackDoDicomReslice cbk);
+	DLL_INTERFACE void _stdcall DLL_DeleteImageData(ImageDataToDelphi& id);
 }

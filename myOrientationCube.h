@@ -39,7 +39,7 @@ private:
 	void CreatePipeline();
 	void DebugSave();
 	std::vector<DataSnapshot> dataSnapshots;
-
+	FNCallbackDoDicomReslice callbackDeReslice;
 public:	
 	static myOrientationCube* New();
 	void SetRenderers(vtkRenderer* imageLayer, vtkRenderer* cubeLayer);
@@ -59,4 +59,5 @@ public:
 	void SaveDataSnapshot();
 	DataSnapshot GetFirstState();
 	void SetState(DataSnapshot s);
+	void SetCallbackDeReslice(FNCallbackDoDicomReslice cbk);
 };

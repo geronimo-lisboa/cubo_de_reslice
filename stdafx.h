@@ -72,6 +72,7 @@
 #include <vtkAssemblyNode.h>
 #include <vtkAssembly.h>
 #include <vtkSphereSource.h>
+#include <vtkImageFlip.h>
 
 typedef void(_stdcall*FNCallbackDeCarga)(float);
 
@@ -85,4 +86,4 @@ struct ImageDataToDelphi {
 	short *bufferData;
 };
 
-typedef void(_stdcall *FNCallbackDoDicomReslice)(ImageDataToDelphi& outData);
+typedef void(_stdcall *FNCallbackDoDicomReslice)(ImageDataToDelphi outData);

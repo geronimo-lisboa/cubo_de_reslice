@@ -11,6 +11,7 @@ SistemaCuboReslice::SistemaCuboReslice()
 	style = nullptr;
 	imagemImportadaPraVTK = nullptr;
 	imagemOriginal = nullptr;
+	callbackDeReslice = nullptr;
 }
 
 void SistemaCuboReslice::CreateRenderer(HWND handle)
@@ -54,6 +55,11 @@ void SistemaCuboReslice::Render() {
 	renderWindow->Render();
 }
 
+void SistemaCuboReslice::SetCallbackDeReslice(FNCallbackDoDicomReslice cbk)
+{
+	callbackDeReslice = cbk;
+}
+
 void SistemaCuboReslice::SetImage(itk::Image<short, 3>::Pointer img)
 {
 	imagemOriginal = img;
@@ -61,12 +67,17 @@ void SistemaCuboReslice::SetImage(itk::Image<short, 3>::Pointer img)
 	imagemImportadaPraVTK->Update();
 
 	cuboDeOrientacao = vtkSmartPointer<myOrientationCube>::New();
+
+	cuboDeOrientacao->SetCallbackDeReslice(callbackDeReslice);
+
 	cuboDeOrientacao->SetRenderers(rendererDaCamadaDaImagem, rendererDaCamadaDoCubo);
 	cuboDeOrientacao->SetImage(imagemImportadaPraVTK);
+	
 	style->SetWidgetContainerHandle(cuboDeOrientacao);
 	renderWindow->Render();
 	//Guarda os dados iniciais:
 	cuboDeOrientacao->SaveDataSnapshot();
+
 }
 
 void SistemaCuboReslice::SetFuncao(int idFn)

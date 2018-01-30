@@ -9,7 +9,7 @@ uses
 type
   FNCallbackDeCarga = procedure(p:single);stdcall;
   
-  PShort = ^ShortInt;
+  PShort = ^SmallInt;
   
   TImageDataToDelphi = record
     spacing : array[0..2] of Real;
@@ -21,7 +21,7 @@ type
     bufferData : PShort;
   end;
 
-  FNCallbackDoDicomReslice = procedure(var outData:TImageDataToDelphi);stdcall;
+  FNCallbackDoDicomReslice = procedure(data:TImageDataToDelphi);stdcall;
 
   TForm1 = class(TForm)
     panelMPRCubo: TPanel;
@@ -39,6 +39,8 @@ type
     espessura: TTrackBar;
     lbl: TLabel;
     cbbFuncao: TComboBox;
+    PanelCallback: TPanel;
+    imgCallback: TImage;
     procedure btnIniciarClick(Sender: TObject);
     procedure renderTimerTimer(Sender: TObject);
     procedure panelMPRCuboMouseDown(Sender: TObject; Button: TMouseButton;
@@ -67,6 +69,8 @@ type
   DLL_Reset : procedure();stdcall;
   DLL_SetOperacaoDoMouse : procedure(qualBotao, qualOperacao:integer);stdcall;
   DLL_Render : procedure();stdcall;
+  DLL_SetCallbackDoReslice : procedure(cbk:FNCallbackDoDicomReslice);stdcall;
+  DLL_DeleteImageData:procedure(var data:TImageDataToDelphi);stdcall;
 
 	DLL_MouseMove:function(wnd:hwnd; nFlags:longword; X,Y:integer):integer;stdcall;
 	DLL_LMouseDown:function(wnd:hwnd; nFlags:longword; X,Y:integer):integer;stdcall;
@@ -75,8 +79,7 @@ type
 	DLL_MMouseUp:function(wnd:hwnd; nFlags:longword; X,Y:integer):integer;stdcall;
 	DLL_RMouseDown:function(wnd:hwnd; nFlags:longword; X,Y:integer):integer;stdcall;
 	DLL_RMouseUp:function(wnd:hwnd; nFlags:longword; X,Y:integer):integer;stdcall;
-
-  end;
+ end;
 const
   dllPath = 'C:\mprcubo\build\Release\mpr_cubo_v0.dll';
 
@@ -85,11 +88,63 @@ var
 
 implementation
 
+uses Types;
+
 {$R *.dfm}
 procedure CallbackDoProgessoDeCarga(p:Single);stdcall;
 begin
   Form1.progressBar.Position := Round(p * 100);
   Form1.progressBar.Refresh();
+end;
+
+procedure CallbackDoReslice(data:TImageDataToDelphi);stdcall;
+const
+  wc = 50;
+  ww = 350;
+var
+  i:integer;
+  dI : Extended;
+  bufferCursor:PShort;
+  rgbBuffer:array of Byte;
+  currentScalar,w0,wF : SmallInt;
+  rect:TRect;
+  bmp:TBitmap;
+begin
+  bufferCursor := data.bufferData;
+  SetLength(rgbBuffer, data.imageSize[0] * data.imageSize[1] * 3);
+{ ////DESABILITADO PQ NÃO SEI FAZER ISSO SER RAPIDO SEM ME DAR AO TRABALHO DE USAR DIRECTDRAW E ESSE CÓDIGO
+///SO EXISTE PRA TESTAR O BITMAP
+  w0:= wc - round(ww/2) ;
+  wf:= wc + Round(ww/2) ;
+  dI:= 256.0/(wf-w0);
+
+  bmp := TBitmap.Create();
+  bmp.Width := data.imageSize[0];
+  bmp.Height := data.imageSize[1];
+
+  for i:=0 to (data.imageSize[0] * data.imageSize[1])-1 do
+  begin
+    currentScalar := bufferCursor^;
+    if(currentScalar<=w0)then currentScalar := 0
+    else if(currentScalar>=wF)then currentScalar := 255
+    else currentScalar := Round ((currentScalar - w0) * dI);
+
+    rgbBuffer[i * 3 + 0] := currentScalar;
+    rgbBuffer[i * 3 + 1] := currentScalar;
+    rgbBuffer[i * 3 + 2] := currentScalar;
+
+    bmp.Canvas.Pixels[i mod data.imageSize[0], i div data.imageSize[0]]:=RGB(currentScalar,currentScalar,currentScalar);
+    Inc(bufferCursor);
+  end;//Os dados estão em rgbBuffer. Agora é por dentro da canvas da imagem
+  rect.Left := 0;
+  rect.Top := 0;
+  rect.Right := Round(data.spacing[0] * data.imageSize[0]);
+  rect.Bottom := Round(data.spacing[1] * data.imageSize[1]);
+
+  Form1.imgCallback.Canvas.CopyRect(rect, bmp.Canvas, rect);
+  Form1.PanelCallback.Refresh();
+}
+  Form1.DLL_DeleteImageData(data);
 end;
 
 procedure TForm1.btnIniciarClick(Sender: TObject);
@@ -104,7 +159,9 @@ begin
     //Seta o callback da carga
     DLL_SetCallbackDeCarga(CallbackDoProgessoDeCarga);
     //Carrega a imagem
+        DLL_SetCallbackDoReslice(CallbackDoReslice);
     DLL_LoadVolume(PChar(edtDirDaImagem.text));
+
     btnIniciar.Enabled := false;
     edtDirDaImagem.Enabled := False;
     renderTimer.Enabled := True;
@@ -166,6 +223,12 @@ begin
 
   DLL_Render := GetProcAddress(dllHandle, '_DLL_Render@0');
   if(Assigned(DLL_Render)=False)then raise Exception.Create('DLL_Render');
+
+  DLL_SetCallbackDoReslice := GetProcAddress(dllHandle, '_DLL_SetCallbackDoReslice@4');
+  if(Assigned(DLL_SetCallbackDoReslice)=False)then raise Exception.Create('DLL_SetCallbackDoReslice');
+
+  DLL_DeleteImageData := GetProcAddress(dllHandle, '_DLL_DeleteImageData@4');
+  if(Assigned(DLL_DeleteImageData)=False)then raise Exception.Create('DLL_DeleteImageData');
 end;
 
 procedure TForm1.renderTimerTimer(Sender: TObject);

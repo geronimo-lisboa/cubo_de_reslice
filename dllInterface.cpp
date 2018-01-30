@@ -5,6 +5,7 @@
 
 std::unique_ptr<SistemaCuboReslice> sistema = nullptr;
 FNCallbackDeCarga callbackDeCarga = nullptr;
+FNCallbackDoDicomReslice callbackDeReslice = nullptr;
 itk::Image<short, 3>::Pointer imagemOriginal = nullptr;
 std::map<std::string, std::string> metadataDaImagem;
 class DelphiProgressCallback : public itk::Command
@@ -31,6 +32,15 @@ public:
 		callbackDeCarga(processObject->GetProgress());
 	}
 };
+
+void _stdcall DLL_SetCallbackDoReslice(FNCallbackDoDicomReslice cbk) {
+	callbackDeReslice = cbk;
+	sistema->SetCallbackDeReslice(callbackDeReslice);
+}
+
+void _stdcall DLL_DeleteImageData(ImageDataToDelphi& id) {
+	delete[] id.bufferData;
+}
 
 void _stdcall DLL_CreateRenderer(HWND handle) {
 	sistema = std::make_unique<SistemaCuboReslice>();

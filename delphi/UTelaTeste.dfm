@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 662
-  Top = 177
-  Width = 714
+  Left = 431
+  Top = 162
+  Width = 1248
   Height = 822
   Caption = 'Form1'
   Color = clBtnFace
@@ -160,6 +160,20 @@ object Form1: TForm1
       'MIP'
       'MinP'
       'Composite')
+  end
+  object PanelCallback: TPanel
+    Left = 640
+    Top = 8
+    Width = 585
+    Height = 753
+    Caption = 'PanelCallback'
+    TabOrder = 10
+    object imgCallback: TImage
+      Left = 0
+      Top = 0
+      Width = 585
+      Height = 753
+    end
   end
   object renderTimer: TTimer
     Enabled = False
