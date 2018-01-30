@@ -1,7 +1,7 @@
 object Form1: TForm1
   Left = 662
   Top = 177
-  Width = 1046
+  Width = 714
   Height = 822
   Caption = 'Form1'
   Color = clBtnFace
@@ -21,14 +21,14 @@ object Form1: TForm1
     Caption = 'ESQ:'
   end
   object lbl2: TLabel
-    Left = 184
+    Left = 152
     Top = 56
     Width = 23
     Height = 13
     Caption = 'MID:'
   end
   object lbl3: TLabel
-    Left = 360
+    Left = 288
     Top = 56
     Width = 22
     Height = 13
@@ -79,7 +79,7 @@ object Form1: TForm1
   object cbkBtnEsq: TComboBox
     Left = 35
     Top = 53
-    Width = 145
+    Width = 110
     Height = 21
     ItemHeight = 13
     TabOrder = 4
@@ -95,9 +95,9 @@ object Form1: TForm1
       '')
   end
   object cbbBtnMid: TComboBox
-    Left = 211
+    Left = 179
     Top = 53
-    Width = 145
+    Width = 102
     Height = 21
     ItemHeight = 13
     TabOrder = 5
@@ -111,9 +111,9 @@ object Form1: TForm1
       'VTKIS_DOLLY')
   end
   object cbbBtnDir: TComboBox
-    Left = 387
+    Left = 315
     Top = 53
-    Width = 145
+    Width = 94
     Height = 21
     ItemHeight = 13
     TabOrder = 6
@@ -147,7 +147,7 @@ object Form1: TForm1
     OnChange = espessuraChange
   end
   object cbbFuncao: TComboBox
-    Left = 544
+    Left = 424
     Top = 53
     Width = 145
     Height = 21

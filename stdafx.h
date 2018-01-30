@@ -74,3 +74,15 @@
 #include <vtkSphereSource.h>
 
 typedef void(_stdcall*FNCallbackDeCarga)(float);
+
+struct ImageDataToDelphi {
+	double spacing[3];
+	double physicalOrigin[3];
+	double uVector[3];
+	double vVector[3];
+	int imageSize[2];
+	unsigned int bufferSize;
+	short *bufferData;
+};
+
+typedef void(_stdcall *FNCallbackDoDicomReslice)(ImageDataToDelphi& outData);

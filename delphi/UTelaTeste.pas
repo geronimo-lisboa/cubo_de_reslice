@@ -8,6 +8,20 @@ uses
 
 type
   FNCallbackDeCarga = procedure(p:single);stdcall;
+  
+  PShort = ^ShortInt;
+  
+  TImageDataToDelphi = record
+    spacing : array[0..2] of Real;
+    physicalOrigin : array[0..2] of Real;
+    uVector : array[0..2] of Real;
+    vVector : array[0..2] of Real;
+    imageSize : array[0..1] of LongWord;
+    bufferSize : LongWord;
+    bufferData : PShort;
+  end;
+
+  FNCallbackDoDicomReslice = procedure(var outData:TImageDataToDelphi);stdcall;
 
   TForm1 = class(TForm)
     panelMPRCubo: TPanel;
@@ -64,7 +78,7 @@ type
 
   end;
 const
-  dllPath = 'C:\mprcubo\build\Debug\mpr_cubo_v0.dll';
+  dllPath = 'C:\mprcubo\build\Release\mpr_cubo_v0.dll';
 
 var
   Form1: TForm1;
