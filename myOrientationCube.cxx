@@ -88,9 +88,9 @@ myOrientationCube::myOrientationCube() {
 	imageLayer = nullptr;
 	image = nullptr;
 	thickSlabReslice = nullptr;
-	SetSlabThickness(1.0);
-	SetInterpolacao(Linear);
-	SetTipoDeFuncao(Composite);
+	thickness = 1.0;
+	tipoInterpolacao = Linear;
+	tipoFuncao = Composite;
 	letraPass = nullptr;
 	alredyReset = nullptr;
 	alredyZoomed = nullptr;
@@ -243,6 +243,7 @@ void myOrientationCube::SetImage(vtkSmartPointer<vtkImageImport> imgSrc) {
 void myOrientationCube::SetSlabThickness(double mm)
 {
 	thickness = mm;
+	UpdateReslice();
 }
 
 void myOrientationCube::SetInterpolacao(Interpolacao i)
@@ -253,6 +254,7 @@ void myOrientationCube::SetInterpolacao(Interpolacao i)
 void myOrientationCube::SetTipoDeFuncao(Funcao i)
 {
 	tipoFuncao = i;
+	UpdateReslice();
 }
 
 std::array<vtkSmartPointer<vtkActor>, 8> myOrientationCube::GetHandles()

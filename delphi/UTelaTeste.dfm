@@ -34,9 +34,16 @@ object Form1: TForm1
     Height = 13
     Caption = 'DIR:'
   end
+  object lbl: TLabel
+    Left = 536
+    Top = 104
+    Width = 16
+    Height = 13
+    Caption = 'mm'
+  end
   object panelMPRCubo: TPanel
     Left = 8
-    Top = 96
+    Top = 152
     Width = 585
     Height = 577
     Caption = 'panelMPRCubo'
@@ -127,6 +134,32 @@ object Form1: TForm1
     Caption = 'btnReset'
     TabOrder = 7
     OnClick = btnResetClick
+  end
+  object espessura: TTrackBar
+    Left = 16
+    Top = 96
+    Width = 521
+    Height = 45
+    Max = 100
+    Min = 1
+    Position = 1
+    TabOrder = 8
+    OnChange = espessuraChange
+  end
+  object cbbFuncao: TComboBox
+    Left = 544
+    Top = 53
+    Width = 145
+    Height = 21
+    ItemHeight = 13
+    ItemIndex = 0
+    TabOrder = 9
+    Text = 'MIP'
+    OnChange = cbbFuncaoChange
+    Items.Strings = (
+      'MIP'
+      'MinP'
+      'Composite')
   end
   object renderTimer: TTimer
     Enabled = False

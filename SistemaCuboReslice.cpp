@@ -82,7 +82,7 @@ void SistemaCuboReslice::SetFuncao(int idFn)
 		cuboDeOrientacao->SetTipoDeFuncao(myOrientationCube::Funcao::Composite);
 		break;
 	}
-	
+	renderWindow->Render();
 }
 
 void SistemaCuboReslice::SetInterpolacao(int idFn)
@@ -137,6 +137,7 @@ int SistemaCuboReslice::RMouseUp(HWND wnd, UINT nFlags, int X, int Y)
 
 void SistemaCuboReslice::SetThickness(double mm) {
 	cuboDeOrientacao->SetSlabThickness(mm);
+	renderWindow->Render();
 }
 
 void SistemaCuboReslice::Reset()

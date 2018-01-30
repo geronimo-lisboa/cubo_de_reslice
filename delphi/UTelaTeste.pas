@@ -22,6 +22,9 @@ type
     cbbBtnDir: TComboBox;
     lbl3: TLabel;
     btnReset: TButton;
+    espessura: TTrackBar;
+    lbl: TLabel;
+    cbbFuncao: TComboBox;
     procedure btnIniciarClick(Sender: TObject);
     procedure renderTimerTimer(Sender: TObject);
     procedure panelMPRCuboMouseDown(Sender: TObject; Button: TMouseButton;
@@ -35,6 +38,8 @@ type
     procedure cbbBtnMidChange(Sender: TObject);
     procedure cbbBtnDirChange(Sender: TObject);
     procedure btnResetClick(Sender: TObject);
+    procedure espessuraChange(Sender: TObject);
+    procedure cbbFuncaoChange(Sender: TObject);
   private
     dllHandle: Cardinal;
     procedure loadFunction();
@@ -224,6 +229,18 @@ procedure TForm1.btnResetClick(Sender: TObject);
 begin
   if(Assigned(DLL_Reset))then
     DLL_Reset();
+end;
+
+procedure TForm1.espessuraChange(Sender: TObject);
+begin
+  if(Assigned(DLL_SetThickness))then
+    DLL_SetThickness(espessura.Position * 1.0);
+end;
+
+procedure TForm1.cbbFuncaoChange(Sender: TObject);
+begin
+  if(Assigned(DLL_SetFuncao))then
+      DLL_SetFuncao(cbbFuncao.itemIndex);
 end;
 
 end.
