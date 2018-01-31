@@ -191,4 +191,12 @@ object Form1: TForm1
     Left = 128
     Top = 104
   end
+  object CuboDeReslice1: TCuboDeReslice
+    IdFuncao = 0
+    IdOperacaoBotaoEsquerdo = 0
+    IdOperacaoBotaoMeio = 0
+    IdOperacaoBotaoDireito = 0
+    Left = 584
+    Top = 96
+  end
 end

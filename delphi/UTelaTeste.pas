@@ -4,16 +4,13 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ExtCtrls, ComCtrls, MyInterface, UTypedefs;
+  Dialogs, StdCtrls, ExtCtrls, ComCtrls, MyInterface, UTypedefs,
+  CuboDeReslice;
 
 type
   FNCallbackDeCarga = procedure(p:single);stdcall;
-  
 
-  
-
-
-  FNCallbackDoDicomReslice = procedure(data:TImageDataToDelphi);stdcall;
+  FNCallbackDoDicomReslice = procedure(data:TImageDataToDelphi; handleDoSubsistema:longint);stdcall;
 
   TForm1 = class(TForm)
     panelMPRCubo: TPanel;
@@ -34,6 +31,7 @@ type
     PanelCallback: TPanel;
     imgCallback: TImage;
     btnDie: TButton;
+    CuboDeReslice1: TCuboDeReslice;
     procedure btnIniciarClick(Sender: TObject);
     procedure renderTimerTimer(Sender: TObject);
     procedure panelMPRCuboMouseDown(Sender: TObject; Button: TMouseButton;
@@ -53,27 +51,6 @@ type
   public
     interfaceDaDll:TInterfaceVTK;
     handleSubsistema : longint;
-{  DLL_CreateRenderer : procedure(handle:HWND);stdcall;
-	DLL_ResizeRenderer : procedure(W,H:Integer);stdcall;
-	DLL_SetCallbackDeCarga : procedure(cbk:FNCallbackDeCarga);stdcall;
-	DLL_LoadVolume : procedure(pathToFile:PChar);stdcall;
-	DLL_SetThickness : procedure(t:real);stdcall;
-	DLL_SetFuncao : procedure(idFuncao:integer);stdcall;
-  DLL_Reset : procedure();stdcall;
-  DLL_SetOperacaoDoMouse : procedure(qualBotao, qualOperacao:integer);stdcall;
-  DLL_Render : procedure();stdcall;
-  DLL_SetCallbackDoReslice : procedure(cbk:FNCallbackDoDicomReslice);stdcall;
-  DLL_DeleteImageData:procedure(var data:TImageDataToDelphi);stdcall;
-
-	DLL_MouseMove:function(wnd:hwnd; nFlags:longword; X,Y:integer):integer;stdcall;
-	DLL_LMouseDown:function(wnd:hwnd; nFlags:longword; X,Y:integer):integer;stdcall;
-	DLL_LMouseUp:function(wnd:hwnd; nFlags:longword; X,Y:integer):integer;stdcall;
-	DLL_MMouseDown:function(wnd:hwnd; nFlags:longword; X,Y:integer):integer;stdcall;
-	DLL_MMouseUp:function(wnd:hwnd; nFlags:longword; X,Y:integer):integer;stdcall;
-	DLL_RMouseDown:function(wnd:hwnd; nFlags:longword; X,Y:integer):integer;stdcall;
-	DLL_RMouseUp:function(wnd:hwnd; nFlags:longword; X,Y:integer):integer;stdcall;
-  }
-  
  end;
 
 
@@ -109,7 +86,7 @@ begin
   Form1.progressBar.Refresh();
 end;
 
-procedure CallbackDoReslice(data:TImageDataToDelphi);stdcall;
+procedure CallbackDoReslice(data:TImageDataToDelphi; handleDoSubsistema:longint);stdcall;
 const
   wc = 50;
   ww = 350;
@@ -191,13 +168,14 @@ begin
     end;
     /////Agora começa o que se refere ao reslice cubico
     //Cria o subsistema do reslice cubico
-    interfaceDaDll.CuboMPR_AtivarSubsistema( nomeDoExame,  nomeDaSerie, handleSubsistema);
-    //Seta qual função vai receber o resultado do reslice.
-    interfaceDaDll.CuboMPR_SetCallbackDoReslice(CallbackDoReslice, handleSubsistema);
+    CuboDeReslice1.AtivarSubsistema(interfaceDaDll, nomeDoExame,  nomeDaSerie);
     //A tela onde o reslice cubico vai ser desenhado pode ser qqer TPanel, não precisa de um TPanel especial.
-    interfaceDaDll.CuboMPR_CuboMPR_CriarJanela(0, panelMPRCubo.handle, 0, handleSubsistema);
+    CuboDeReslice1.CreateWindow(panelMPRCubo);
+    //Seta qual função vai receber o resultado do reslice.
+	CuboDeReslice1.SetCallbackDoDicom(CallbackDoReslice);
     //Agora que a tela está criada e a janela criada, criar a pipeline
-    interfaceDaDll.CuboMPR_CriarPipeline(nomeDoExame, nomeDaSerie, handleSubsistema);
+	CuboDeReslice1.CriarPipeline();    
+    //-------------------
     //Coisas da tela de teste.
     btnIniciar.Enabled := false;
     edtDirDaImagem.Enabled := False;
@@ -208,83 +186,81 @@ end;
 
 procedure TForm1.renderTimerTimer(Sender: TObject);
 begin
-  if(Assigned(interfaceDaDll)=True)then
-    interfaceDaDll.CuboMPR_ForceRender(handleSubsistema);
+  if(assigned(CuboDeReslice1)=true)then
+  	CuboDeReslice1.Render();
 end;
 
 procedure TForm1.panelMPRCuboMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if (Assigned(interfaceDaDll)=false)then
-    Exit;
   if(Button = mbLeft)then begin
-    interfaceDaDll.CuboMPR_LMouseDown(panelMPRCubo.Handle, 0, X,Y, handleSubsistema);
+	CuboDeReslice1.OnLeftButtonDown(X,Y);    
   end;
   if(Button = mbMiddle)then begin
-    interfaceDaDll.CuboMPR_MMouseDown(panelMPRCubo.Handle, 0, X,Y, handleSubsistema);
+    CuboDeReslice1.OnMiddleButtonDown(X,Y);
   end;
   if(Button = mbRight)then begin
-    interfaceDaDll.CuboMPR_RMouseDown(panelMPRCubo.Handle, 0, X,Y, handleSubsistema);
+    CuboDeReslice1.OnRightButtonDown(X,Y);
   end;
 end;
 
 procedure TForm1.panelMPRCuboMouseMove(Sender: TObject; Shift: TShiftState;
   X, Y: Integer);
 begin
-  if (Assigned(interfaceDaDll)=false)then
-    Exit;
-  interfaceDaDll.CuboMPR_MouseMove(panelMPRCubo.Handle, 0, X,Y, handleSubsistema);
+	CuboDeReslice1.OnMouseMove(x,y);
 end;
 
 procedure TForm1.panelMPRCuboMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
-  if (Assigned(interfaceDaDll)=false)then
-    Exit;
   if(Button = mbLeft)then begin
-    interfaceDaDll.CuboMPR_LMouseUp(panelMPRCubo.Handle, 0, X,Y, handleSubsistema);;
+	CuboDeReslice1.OnLeftButtonUp(X,Y);
   end;
   if(Button = mbMiddle)then begin
-    interfaceDaDll.CuboMPR_MMouseUp(panelMPRCubo.Handle, 0, X,Y, handleSubsistema);;
+    CuboDeReslice1.OnMiddleButtonUp(X,Y);
   end;
   if(Button = mbRight)then begin
-    interfaceDaDll.CuboMPR_RMouseUp(panelMPRCubo.Handle, 0, X,Y, handleSubsistema);;
+    CuboDeReslice1.OnRightButtonUp(X,Y);
   end;
 end;
 
 procedure TForm1.cbkBtnEsqChange(Sender: TObject);
 begin
-  interfaceDaDll.CuboMPR_SetOperacaoDoMouse(0,cbkBtnEsq.ItemIndex, handleSubsistema);
+	CuboDeReslice1.IdOperacaoBotaoEsquerdo := cbkBtnEsq.ItemIndex;  
 end;
 
 procedure TForm1.cbbBtnMidChange(Sender: TObject);
 begin
-  interfaceDaDll.CuboMPR_SetOperacaoDoMouse(1,cbbBtnMid.ItemIndex, handleSubsistema);
+	CuboDeReslice1.IdOperacaoBotaoMeio := cbbBtnMid.ItemIndex;  
 end;
 
 procedure TForm1.cbbBtnDirChange(Sender: TObject);
 begin
-  interfaceDaDll.CuboMPR_SetOperacaoDoMouse(2,cbbBtnDir.ItemIndex, handleSubsistema);
+	CuboDeReslice1.IdOperacaoBotaoDireito := cbbBtnDir.ItemIndex;  
+
 end;
 
 procedure TForm1.btnResetClick(Sender: TObject);
 begin
-  interfaceDaDll.CuboMPR_Reset(handleSubsistema);
+  CuboDeReslice1.Reset();
 end;
 
 procedure TForm1.espessuraChange(Sender: TObject);
 begin
-  interfaceDaDll.CuboMPR_SetThickness(espessura.Position * 1.0, handleSubsistema);
+	CuboDeReslice1.SlabThicknessEmMilimetros :=espessura.Position * 1.0;
+
 end;
 
 procedure TForm1.cbbFuncaoChange(Sender: TObject);
 begin
-  interfaceDaDll.CuboMPR_SetFuncao(cbbFuncao.itemIndex, handleSubsistema);
+	CuboDeReslice1.SlabThicknessEmMilimetros :=cbbFuncao.itemIndex;
+  
 end;
 
 procedure TForm1.btnDieClick(Sender: TObject);
 begin
-  interfaceDaDll.CuboMPR_Destroy(handleSubsistema);
+	CuboDeReslice1.Destroy();
+  
 end;
 
 end.
