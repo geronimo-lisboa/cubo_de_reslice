@@ -33,6 +33,7 @@ type
     cbbFuncao: TComboBox;
     PanelCallback: TPanel;
     imgCallback: TImage;
+    btnDie: TButton;
     procedure btnIniciarClick(Sender: TObject);
     procedure renderTimerTimer(Sender: TObject);
     procedure panelMPRCuboMouseDown(Sender: TObject; Button: TMouseButton;
@@ -47,6 +48,7 @@ type
     procedure btnResetClick(Sender: TObject);
     procedure espessuraChange(Sender: TObject);
     procedure cbbFuncaoChange(Sender: TObject);
+    procedure btnDieClick(Sender: TObject);
   private
   public
     interfaceDaDll:TInterfaceVTK;
@@ -278,6 +280,11 @@ end;
 procedure TForm1.cbbFuncaoChange(Sender: TObject);
 begin
   interfaceDaDll.CuboMPR_SetFuncao(cbbFuncao.itemIndex, handleSubsistema);
+end;
+
+procedure TForm1.btnDieClick(Sender: TObject);
+begin
+  interfaceDaDll.CuboMPR_Destroy(handleSubsistema);
 end;
 
 end.

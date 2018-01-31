@@ -175,6 +175,15 @@ object Form1: TForm1
       Height = 753
     end
   end
+  object btnDie: TButton
+    Left = 112
+    Top = 744
+    Width = 75
+    Height = 25
+    Caption = 'btnDie'
+    TabOrder = 11
+    OnClick = btnDieClick
+  end
   object renderTimer: TTimer
     Enabled = False
     Interval = 200
