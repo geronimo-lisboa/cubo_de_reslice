@@ -1,8 +1,8 @@
 object Form1: TForm1
-  Left = 336
-  Top = 172
-  Width = 1248
-  Height = 822
+  Left = 337
+  Top = 34
+  Width = 928
+  Height = 985
   Caption = 'Form1'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -11,6 +11,7 @@ object Form1: TForm1
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object lbl1: TLabel
@@ -41,24 +42,13 @@ object Form1: TForm1
     Height = 13
     Caption = 'mm'
   end
-  object panelMPRCubo: TPanel
-    Left = 8
-    Top = 152
-    Width = 585
-    Height = 577
-    Caption = 'panelMPRCubo'
-    TabOrder = 0
-    OnMouseDown = panelMPRCuboMouseDown
-    OnMouseMove = panelMPRCuboMouseMove
-    OnMouseUp = panelMPRCuboMouseUp
-  end
   object btnIniciar: TButton
     Left = 0
     Top = 0
     Width = 75
     Height = 25
     Caption = 'btnIniciar'
-    TabOrder = 1
+    TabOrder = 0
     OnClick = btnIniciarClick
   end
   object edtDirDaImagem: TEdit
@@ -66,7 +56,7 @@ object Form1: TForm1
     Top = 0
     Width = 529
     Height = 21
-    TabOrder = 2
+    TabOrder = 1
     Text = 'C:\meus dicoms\Marching Man'
   end
   object progressBar: TProgressBar
@@ -74,7 +64,7 @@ object Form1: TForm1
     Top = 24
     Width = 625
     Height = 17
-    TabOrder = 3
+    TabOrder = 2
   end
   object cbkBtnEsq: TComboBox
     Left = 35
@@ -82,7 +72,7 @@ object Form1: TForm1
     Width = 110
     Height = 21
     ItemHeight = 13
-    TabOrder = 4
+    TabOrder = 3
     Text = 'VTKIS_NONE'
     OnChange = cbkBtnEsqChange
     Items.Strings = (
@@ -100,7 +90,7 @@ object Form1: TForm1
     Width = 102
     Height = 21
     ItemHeight = 13
-    TabOrder = 5
+    TabOrder = 4
     Text = 'VTKIS_NONE'
     OnChange = cbbBtnMidChange
     Items.Strings = (
@@ -116,7 +106,7 @@ object Form1: TForm1
     Width = 94
     Height = 21
     ItemHeight = 13
-    TabOrder = 6
+    TabOrder = 5
     Text = 'VTKIS_NONE'
     OnChange = cbbBtnDirChange
     Items.Strings = (
@@ -127,12 +117,12 @@ object Form1: TForm1
       'VTKIS_DOLLY')
   end
   object btnReset: TButton
-    Left = 0
-    Top = 752
+    Left = 632
+    Top = 40
     Width = 75
     Height = 25
     Caption = 'btnReset'
-    TabOrder = 7
+    TabOrder = 6
     OnClick = btnResetClick
   end
   object espessura: TTrackBar
@@ -143,7 +133,7 @@ object Form1: TForm1
     Max = 100
     Min = 1
     Position = 1
-    TabOrder = 8
+    TabOrder = 7
     OnChange = espessuraChange
   end
   object cbbFuncao: TComboBox
@@ -153,7 +143,7 @@ object Form1: TForm1
     Height = 21
     ItemHeight = 13
     ItemIndex = 0
-    TabOrder = 9
+    TabOrder = 8
     Text = 'MIP'
     OnChange = cbbFuncaoChange
     Items.Strings = (
@@ -162,27 +152,38 @@ object Form1: TForm1
       'Composite')
   end
   object PanelCallback: TPanel
-    Left = 640
+    Left = 944
     Top = 8
-    Width = 585
+    Width = 537
     Height = 753
     Caption = 'PanelCallback'
-    TabOrder = 10
+    TabOrder = 9
     object imgCallback: TImage
-      Left = 0
-      Top = 0
+      Left = 64
+      Top = 80
       Width = 585
       Height = 753
     end
   end
-  object btnDie: TButton
-    Left = 112
-    Top = 744
-    Width = 75
-    Height = 25
-    Caption = 'btnDie'
-    TabOrder = 11
-    OnClick = btnDieClick
+  object pnl1: TPanel
+    Left = 16
+    Top = 152
+    Width = 817
+    Height = 777
+    Caption = 'pnl1'
+    Color = clAppWorkSpace
+    TabOrder = 10
+    object panelMprCubo: TPanel
+      Left = 48
+      Top = 40
+      Width = 721
+      Height = 705
+      Caption = 'panelMprCubo'
+      TabOrder = 0
+      OnMouseDown = panelMprCuboMouseDown
+      OnMouseMove = panelMprCuboMouseMove
+      OnMouseUp = panelMprCuboMouseUp
+    end
   end
   object renderTimer: TTimer
     Enabled = False
@@ -192,6 +193,8 @@ object Form1: TForm1
     Top = 104
   end
   object CuboDeReslice1: TCuboDeReslice
+    Window = 400.000000000000000000
+    Level = 1000.000000000000000000
     IdFuncao = 0
     IdOperacaoBotaoEsquerdo = 0
     IdOperacaoBotaoMeio = 0

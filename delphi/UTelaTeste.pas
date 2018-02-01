@@ -13,7 +13,6 @@ type
   FNCallbackDoDicomReslice = procedure(data:TImageDataToDelphi; handleDoSubsistema:longint);stdcall;
 
   TForm1 = class(TForm)
-    panelMPRCubo: TPanel;
     btnIniciar: TButton;
     edtDirDaImagem: TEdit;
     progressBar: TProgressBar;
@@ -30,15 +29,16 @@ type
     cbbFuncao: TComboBox;
     PanelCallback: TPanel;
     imgCallback: TImage;
-    btnDie: TButton;
     CuboDeReslice1: TCuboDeReslice;
+    pnl1: TPanel;
+    panelMprCubo: TPanel;
     procedure btnIniciarClick(Sender: TObject);
     procedure renderTimerTimer(Sender: TObject);
-    procedure panelMPRCuboMouseDown(Sender: TObject; Button: TMouseButton;
+    procedure panelMprCuboMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure panelMPRCuboMouseMove(Sender: TObject; Shift: TShiftState; X,
+    procedure panelMprCuboMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
-    procedure panelMPRCuboMouseUp(Sender: TObject; Button: TMouseButton;
+    procedure panelMprCuboMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure cbkBtnEsqChange(Sender: TObject);
     procedure cbbBtnMidChange(Sender: TObject);
@@ -46,7 +46,8 @@ type
     procedure btnResetClick(Sender: TObject);
     procedure espessuraChange(Sender: TObject);
     procedure cbbFuncaoChange(Sender: TObject);
-    procedure btnDieClick(Sender: TObject);
+
+    procedure FormDestroy(Sender: TObject);
   private
   public
     interfaceDaDll:TInterfaceVTK;
@@ -154,7 +155,8 @@ begin
     //Carrega a imagem...
     nomeDoExame := 'exame 1';
     nomeDaSerie := 'serie a';
-    listaDeArquivos := GerarListaDeNomes('C:\meus dicoms\abdomen.txt');
+    //listaDeArquivos := GerarListaDeNomes('C:\meus dicoms\abdomen.txt');
+    listaDeArquivos := GerarListaDeNomes('C:\meus dicoms\mm.txt');
     if (interfaceDaDll.HasLoadedImage(PAnsiChar(nomeDoExame), PAnsiChar(nomeDaSerie))=False) then
     begin
       for i:=0 to listaDeArquivos.Count-1 do
@@ -190,7 +192,7 @@ begin
   	CuboDeReslice1.Render();
 end;
 
-procedure TForm1.panelMPRCuboMouseDown(Sender: TObject;
+procedure TForm1.panelMprCuboMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   if(Button = mbLeft)then begin
@@ -204,13 +206,13 @@ begin
   end;
 end;
 
-procedure TForm1.panelMPRCuboMouseMove(Sender: TObject; Shift: TShiftState;
+procedure TForm1.panelMprCuboMouseMove(Sender: TObject; Shift: TShiftState;
   X, Y: Integer);
 begin
 	CuboDeReslice1.OnMouseMove(x,y);
 end;
 
-procedure TForm1.panelMPRCuboMouseUp(Sender: TObject; Button: TMouseButton;
+procedure TForm1.panelMprCuboMouseUp(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
   if(Button = mbLeft)then begin
@@ -257,10 +259,9 @@ begin
   
 end;
 
-procedure TForm1.btnDieClick(Sender: TObject);
+procedure TForm1.FormDestroy(Sender: TObject);
 begin
 	CuboDeReslice1.Destroy();
-  
 end;
 
 end.
