@@ -1,8 +1,8 @@
 object Form1: TForm1
-  Left = 337
-  Top = 34
-  Width = 928
-  Height = 985
+  Left = 330
+  Top = 75
+  Width = 1365
+  Height = 882
   Caption = 'Form1'
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -152,30 +152,30 @@ object Form1: TForm1
       'Composite')
   end
   object PanelCallback: TPanel
-    Left = 944
+    Left = 736
     Top = 8
-    Width = 537
-    Height = 753
+    Width = 601
+    Height = 785
     Caption = 'PanelCallback'
     TabOrder = 9
     object imgCallback: TImage
-      Left = 64
-      Top = 80
+      Left = 0
+      Top = 0
       Width = 585
       Height = 753
     end
   end
   object pnl1: TPanel
-    Left = 16
-    Top = 152
-    Width = 817
-    Height = 777
+    Left = 0
+    Top = 128
+    Width = 729
+    Height = 713
     Caption = 'pnl1'
     Color = clAppWorkSpace
     TabOrder = 10
     object panelMprCubo: TPanel
-      Left = 48
-      Top = 40
+      Left = 0
+      Top = 0
       Width = 721
       Height = 705
       Caption = 'panelMprCubo'
@@ -185,9 +185,17 @@ object Form1: TForm1
       OnMouseUp = panelMprCuboMouseUp
     end
   end
+  object Button1: TButton
+    Left = 632
+    Top = 80
+    Width = 75
+    Height = 25
+    Caption = 'Button1'
+    TabOrder = 11
+    OnClick = Button1Click
+  end
   object renderTimer: TTimer
     Enabled = False
-    Interval = 200
     OnTimer = renderTimerTimer
     Left = 128
     Top = 104
