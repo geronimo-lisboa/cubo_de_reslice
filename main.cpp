@@ -2,6 +2,7 @@
 #include "myOrientationCube.h"
 #include "loadVolume.h"
 #include "myInteractorStyleTrackballActor.h"
+#include "myInteractorStyleTrackballCamera.h"
 
 class ObserveLoadProgressCommand : public itk::Command
 {
@@ -80,13 +81,13 @@ int main(int, char *[])
 	renderWindow->AddRenderer(rendererDaCamadaDoCubo);
 	vtkSmartPointer<vtkRenderWindowInteractor> renderWindowInteractor = vtkSmartPointer<vtkRenderWindowInteractor>::New();
 	renderWindowInteractor->SetRenderWindow(renderWindow);
-	vtkSmartPointer<myInteractorStyleTrackballActor> style = vtkSmartPointer<myInteractorStyleTrackballActor>::New();
+	vtkSmartPointer<myInteractorStyleTrackballCamera> style = vtkSmartPointer<myInteractorStyleTrackballCamera>::New();
 	renderWindowInteractor->SetInteractorStyle(style);
 
 	vtkSmartPointer<myOrientationCube> cuboDeOrientacao = vtkSmartPointer<myOrientationCube>::New();
 	cuboDeOrientacao->SetRenderers(rendererDaCamadaDaImagem, rendererDaCamadaDoCubo);	
 	cuboDeOrientacao->SetImage(imagemImportadaPraVTK);
-	style->SetWidgetContainerHandle(cuboDeOrientacao);
+	//style->SetWidgetContainerHandle(cuboDeOrientacao);
 	renderWindow->Render();
 	//A tela dummy
 	vtkSmartPointer<vtkRenderer> rendererDummy = vtkSmartPointer<vtkRenderer>::New();
