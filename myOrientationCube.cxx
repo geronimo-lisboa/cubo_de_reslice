@@ -144,6 +144,10 @@ void myOrientationCube::CreatePipeline() {
 	imageLayer->ResetCamera();
 	//liga tudo
 	actorDaImagem->GetMapper()->SetInputConnection(thickSlabReslice->GetOutputPort());
+	actorDaImagem->SetPosition(actor->GetPosition());
+	auto imgCam = imageLayer->GetActiveCamera();
+	imgCam->SetFocalPoint(actor->GetPosition());
+	imgCam->SetPosition(actor->GetPosition()[0], actor->GetPosition()[1], actor->GetPosition()[2] + imgCam->GetDistance());
 
 }
 
@@ -151,8 +155,18 @@ void myOrientationCube::UpdateReslice() {
 	if (!thickSlabReslice) {
 		CreatePipeline();
 	}
+	cout << "pos da imagem = " << actorDaImagem->GetPosition()[0] << ", "
+							   << actorDaImagem->GetPosition()[1] << ", "
+							   << actorDaImagem->GetPosition()[2] << endl;
+	cout << "pos do cubo = " << actor->GetPosition()[0] << ", "
+		<< actor->GetPosition()[1] << ", "
+		<< actor->GetPosition()[2] << endl;
 	if (isToLockReslice)
+	{
+		//actorDaImagem->SetPosition(actor->GetPosition());
 		return;
+	}
+
 	thickSlabReslice->SetInputData(image->GetOutput());
 	// Set the default color the minimum scalar value
 	double range[2];
@@ -164,7 +178,7 @@ void myOrientationCube::UpdateReslice() {
 	thickSlabReslice->TransformInputSamplingOff();
 
 	vtkSmartPointer<vtkTransform> transformTrans = vtkSmartPointer<vtkTransform>::New();
-	transformTrans->Translate(actor->GetCenter());	
+	transformTrans->Translate(actor->GetPosition());	
 	transformTrans->Update();
 
 	vtkSmartPointer<vtkTransform> transformRot = vtkSmartPointer<vtkTransform>::New();
@@ -174,7 +188,7 @@ void myOrientationCube::UpdateReslice() {
 
 	vtkSmartPointer<vtkMatrix4x4> mat = vtkSmartPointer<vtkMatrix4x4>::New();
 	mat->Identity();
-	thickSlabReslice->SetResliceAxes(mat);
+	//thickSlabReslice->SetResliceAxes(mat);
 	thickSlabReslice->SetResliceTransform(transformTrans);
 	thickSlabReslice->SetOutputDimensionality(2);
 	switch (tipoInterpolacao) {
@@ -239,6 +253,7 @@ void myOrientationCube::UpdateReslice() {
 	//Manda os dados pro delphi
 	if(callbackDeReslice)
 		callbackDeReslice(data);
+
 }
 
 void myOrientationCube::Execute(vtkObject * caller, unsigned long ev, void * calldata)

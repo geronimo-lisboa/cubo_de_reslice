@@ -64,4 +64,6 @@ public:
 	void LockReslice(bool flag)override {
 		isToLockReslice = flag;
 	}
+	vtkRenderer* GetImageLayerRenderer() override { return imageLayer; }
+	vtkProp3D* GetImageProp()override { return actorDaImagem; }
 };

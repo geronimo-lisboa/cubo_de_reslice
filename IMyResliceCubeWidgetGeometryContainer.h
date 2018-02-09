@@ -6,4 +6,6 @@ public:
 	virtual vtkSmartPointer<vtkActor> GetCube() = 0;
 	virtual ~IMyResliceCubeWidgetGeometryContainer() {}
 	virtual void LockReslice(bool) = 0;
+	virtual vtkRenderer* GetImageLayerRenderer() = 0;
+	virtual vtkProp3D* GetImageProp() = 0;
 };

@@ -525,26 +525,16 @@ void myInteractorStyleTrackballActor::Pan()
 		this->InteractionProp->GetUserMatrix()->DeepCopy(t->GetMatrix());
 		t->Delete();
 	}
-	else
-	{
-		////Novo
-		//cout << "      mv = " << motion_vector[0] << ", " << motion_vector[1] << ", " << motion_vector[2] << endl;
-		
+	else{
 		std::array<double, 3> newPos = { { this->InteractionProp->GetPosition()[0] + motion_vector[0],
 			this->InteractionProp->GetPosition()[1] + motion_vector[1],
 			this->InteractionProp->GetPosition()[2] + motion_vector[2] ,} };
 		this->InteractionProp->SetPosition(newPos.data());
-		////Original
-		//this->InteractionProp->AddPosition(motion_vector[0],
-		//	motion_vector[1],
-		//	motion_vector[2]);
 	}
-
-	if (this->AutoAdjustCameraClippingRange)
-	{
+	if (this->AutoAdjustCameraClippingRange){
 		this->CurrentRenderer->ResetCameraClippingRange();
 	}
-
+	
 	rwi->Render();
 }
 
