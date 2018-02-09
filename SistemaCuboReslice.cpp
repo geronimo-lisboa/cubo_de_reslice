@@ -60,7 +60,7 @@ void SistemaCuboReslice::SetCallbackDeReslice(FNCallbackDoDicomReslice cbk)
 	callbackDeReslice = cbk;
 }
 
-void SistemaCuboReslice::SetImage(itk::Image<short, 3>::Pointer img)
+void SistemaCuboReslice::SetImage(std::array<double, 3> posInicial, itk::Image<short, 3>::Pointer img)
 {
 	imagemOriginal = img;
 	vtkSmartPointer<vtkImageImport> imagemImportadaPraVTK = CreateVTKImage(img);//importa a imagem da itk pra vtk.
@@ -71,7 +71,7 @@ void SistemaCuboReslice::SetImage(itk::Image<short, 3>::Pointer img)
 	cuboDeOrientacao->SetCallbackDeReslice(callbackDeReslice);
 
 	cuboDeOrientacao->SetRenderers(rendererDaCamadaDaImagem, rendererDaCamadaDoCubo);
-	cuboDeOrientacao->SetImage(imagemImportadaPraVTK);
+	cuboDeOrientacao->SetImage(posInicial, imagemImportadaPraVTK);
 	
 	//style->SetWidgetContainerHandle(cuboDeOrientacao);
 	renderWindow->Render();

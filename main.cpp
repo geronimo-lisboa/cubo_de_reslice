@@ -86,7 +86,11 @@ int main(int, char *[])
 
 	vtkSmartPointer<myOrientationCube> cuboDeOrientacao = vtkSmartPointer<myOrientationCube>::New();
 	cuboDeOrientacao->SetRenderers(rendererDaCamadaDaImagem, rendererDaCamadaDoCubo);	
-	cuboDeOrientacao->SetImage(imagemImportadaPraVTK);
+	std::array<double, 3> posicaoInicial = { {
+		imagemImportadaPraVTK->GetOutput()->GetCenter()[0],
+		imagemImportadaPraVTK->GetOutput()->GetCenter()[1],
+		imagemImportadaPraVTK->GetOutput()->GetCenter()[2], } };
+	cuboDeOrientacao->SetImage(posicaoInicial, imagemImportadaPraVTK);
 	//style->SetWidgetContainerHandle(cuboDeOrientacao);
 	renderWindow->Render();
 	//A tela dummy

@@ -69,8 +69,8 @@ void _stdcall DLL_LoadVolume(const char* pathToFile) {
 	orienter->SetInput(imagemOriginal);
 	orienter->Update();
 	imagemOriginal = orienter->GetOutput();
-
-	sistema->SetImage(imagemOriginal);
+	std::array<double, 3> pos = { {0,0,0} };
+	sistema->SetImage(pos, imagemOriginal);
 }
 
 void _stdcall DLL_Render() {

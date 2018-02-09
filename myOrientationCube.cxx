@@ -217,13 +217,22 @@ void myOrientationCube::Execute(vtkObject * caller, unsigned long ev, void * cal
 
 }
 
-void myOrientationCube::SetImage(vtkSmartPointer<vtkImageImport> imgSrc) {
+void myOrientationCube::SetImage(std::array<double, 3> posicaoInicial, vtkSmartPointer<vtkImageImport> imgSrc) {
 	this->image = imgSrc;
-	//actor->SetPosition(image->GetOutput()->GetCenter());
+	auto trans = vtkSmartPointer<vtkTransform>::New();
+	trans->Translate(posicaoInicial.data());
+	trans->Update();
+	
+	owner->GetActiveCamera()->ApplyTransform(trans);//Move a camera da layer do cubo
+	actor->SetUserTransform(trans);//Move o cubo
+
 	owner->GetRenderWindow()->Render();
 	MakeCameraFollowTranslation();
 	MakeAxisFollowCube();
 	owner->GetRenderWindow()->Render();
+
+	imageLayer->GetActiveCamera()->ApplyTransform(trans);//Move a câmera da layer da imagem
+	actorDaImagem->SetUserTransform(trans);//Move o actor da imagem. 
 }
 
 void myOrientationCube::SetSlabThickness(double mm)

@@ -42,7 +42,7 @@ public:
 	SistemaCuboReslice();
 	void CreateRenderer(HWND handle);
 	void Resize(int w, int h);
-	void SetImage(itk::Image<short, 3>::Pointer img);
+	void SetImage(std::array<double, 3> posInicial,itk::Image<short, 3>::Pointer img);
 	void SetFuncao(int idFn);
 	void SetInterpolacao(int idFn);
 	int MouseMove(HWND wnd, UINT nFlags, int X, int Y);

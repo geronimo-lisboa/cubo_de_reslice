@@ -44,7 +44,7 @@ public:
 	static myOrientationCube* New();
 	void SetRenderers(vtkRenderer* imageLayer, vtkRenderer* cubeLayer);
 	void Execute(vtkObject *caller, unsigned long ev, void *calldata);
-	void SetImage(vtkSmartPointer<vtkImageImport> imgSrc);
+	void SetImage(std::array<double,3> posicaoInicial, vtkSmartPointer<vtkImageImport> imgSrc);
 	void SetSlabThickness(double mm);
 	void SetInterpolacao(Interpolacao i);
 	void SetTipoDeFuncao(Funcao i);
