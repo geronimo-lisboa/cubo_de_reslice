@@ -45,41 +45,10 @@ void myOrientationCube::CreateThings() {
 	cubeActor->GetProperty()->BackfaceCullingOff();
 	cubeActor->GetProperty()->SetLineWidth(2);
 	
-	auto sh01 = vtkSmartPointer<vtkSphereSource>::New();
-	sh01->SetRadius(6.125);
-	handles[0] = CreateSphereHandle(sh01, -50,  50, -50);
-	handles[1] = CreateSphereHandle(sh01,  50,  50, -50);
-	handles[2] = CreateSphereHandle(sh01,  50, -50, -50);
-	handles[3] = CreateSphereHandle(sh01, -50, -50, -50);
-	handles[4] = CreateSphereHandle(sh01, -50,  50,  50);
-	handles[5] = CreateSphereHandle(sh01,  50,  50,  50);
-	handles[6] = CreateSphereHandle(sh01,  50, -50,  50);
-	handles[7] = CreateSphereHandle(sh01, -50, -50,  50);
-
-	
 	actor = vtkSmartPointer<vtkAssembly>::New();
 	actor->AddPart(cubeActor);
 	//for (vtkSmartPointer<vtkActor> a : handles)
 	//	actor->AddPart(a);
-
-	//-------
-	axes2 = vtkSmartPointer<vtkAxesActor>::New();
-	axes2->SetShaftTypeToCylinder();
-	axes2->SetXAxisLabelText("w");
-	axes2->SetYAxisLabelText("v");
-	axes2->SetZAxisLabelText("u");
-	axes2->SetTotalLength(1.0, 1.0, 1.0);
-	axes2->SetCylinderRadius(0.500 * axes2->GetCylinderRadius());
-	axes2->SetConeRadius(1.025 * axes2->GetConeRadius());
-	axes2->SetSphereRadius(1.500 * axes2->GetSphereRadius());
-	vtkTextProperty* tprop = axes2->GetXAxisCaptionActor2D()->GetCaptionTextProperty();
-	tprop->ItalicOn();
-	tprop->ShadowOn();
-	tprop->SetFontFamilyToTimes();
-	axes2->GetYAxisCaptionActor2D()->GetCaptionTextProperty()->ShallowCopy(tprop);
-	axes2->GetZAxisCaptionActor2D()->GetCaptionTextProperty()->ShallowCopy(tprop);
-
-
 }
 
 myOrientationCube::myOrientationCube() {
@@ -103,8 +72,8 @@ void myOrientationCube::SetRenderers(vtkRenderer* imageLayer, vtkRenderer* cubeL
 	this->imageLayer = imageLayer;
 	CreateThings();
 	owner->AddActor(actor);
-	//owner->AddActor(axes2);
 	owner->ResetCamera();
+	owner->GetRenderWindow()->Render();
 	owner->AddObserver(vtkCommand::EndEvent, this);
 	owner->AddObserver(vtkCommand::StartEvent, this);
 	owner->AddObserver(vtkCommand::RenderEvent, this);
@@ -116,21 +85,23 @@ void myOrientationCube::SetRenderers(vtkRenderer* imageLayer, vtkRenderer* cubeL
 
 
 void myOrientationCube::MakeCameraFollowTranslation() {
-	vtkCamera *camera = owner->GetActiveCamera();
-	std::array<double, 3> camFocus, camPos, objCenter;
-	camera->GetFocalPoint(camFocus.data());
-	camera->GetPosition(camPos.data());
-	objCenter = { { actor->GetCenter()[0] ,actor->GetCenter()[1] ,actor->GetCenter()[2] } };
-	std::array<double, 3> vecFromPosToFocus = camPos - camFocus;
-	std::array<double, 3> modifiedFocus = objCenter;
-	std::array<double, 3> modifiedPos = objCenter + vecFromPosToFocus;
-	camera->SetFocalPoint(modifiedFocus.data());
-	camera->SetPosition(modifiedPos.data());
+	////novo
+
+	////velho
+	//vtkCamera *camera = owner->GetActiveCamera();
+	//std::array<double, 3> camFocus, camPos, objCenter;
+	//camera->GetFocalPoint(camFocus.data());
+	//camera->GetPosition(camPos.data());
+	//objCenter = { { actor->GetCenter()[0] ,actor->GetCenter()[1] ,actor->GetCenter()[2] } };
+	//std::array<double, 3> vecFromPosToFocus = camPos - camFocus;
+	//std::array<double, 3> modifiedFocus = objCenter;
+	//std::array<double, 3> modifiedPos = objCenter + vecFromPosToFocus;
+	//camera->SetFocalPoint(modifiedFocus.data());
+	//camera->SetPosition(modifiedPos.data());
 }
 
 void myOrientationCube::MakeAxisFollowCube() {
-	axes2->SetOrientation(actor->GetOrientation());
-	axes2->SetUserMatrix(actor->GetMatrix());
+
 }
 
 void myOrientationCube::CreatePipeline() {
@@ -248,12 +219,11 @@ void myOrientationCube::Execute(vtkObject * caller, unsigned long ev, void * cal
 
 void myOrientationCube::SetImage(vtkSmartPointer<vtkImageImport> imgSrc) {
 	this->image = imgSrc;
-	assert(actor && axes2);
-	actor->SetPosition(image->GetOutput()->GetCenter());
+	//actor->SetPosition(image->GetOutput()->GetCenter());
+	owner->GetRenderWindow()->Render();
 	MakeCameraFollowTranslation();
 	MakeAxisFollowCube();
-
-
+	owner->GetRenderWindow()->Render();
 }
 
 void myOrientationCube::SetSlabThickness(double mm)
