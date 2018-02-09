@@ -233,7 +233,8 @@ void myOrientationCube::UpdateReslice() {
 	memcpy(buffer, flipper->GetOutput()->GetScalarPointer(), data.bufferSize);//O buffer
 	data.bufferData = buffer;
 	//Manda os dados pro delphi
-	callbackDeReslice(data);
+	if(callbackDeReslice)
+		callbackDeReslice(data);
 }
 
 void myOrientationCube::Execute(vtkObject * caller, unsigned long ev, void * calldata)
