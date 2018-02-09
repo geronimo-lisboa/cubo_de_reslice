@@ -155,14 +155,31 @@ void myOrientationCube::UpdateReslice() {
 	if (!thickSlabReslice) {
 		CreatePipeline();
 	}
+
+	cout << "---------" << endl;
 	cout << "pos da imagem = " << actorDaImagem->GetPosition()[0] << ", "
 							   << actorDaImagem->GetPosition()[1] << ", "
 							   << actorDaImagem->GetPosition()[2] << endl;
 	cout << "pos do cubo = " << actor->GetPosition()[0] << ", "
 		<< actor->GetPosition()[1] << ", "
 		<< actor->GetPosition()[2] << endl;
-	if (isToLockReslice)
-	{
+
+	
+	cout << "pos do olho= " << imageLayer->GetActiveCamera()->GetPosition()[0] << ", "
+		<< imageLayer->GetActiveCamera()->GetPosition()[1] << ", "
+		<<  imageLayer->GetActiveCamera()->GetPosition()[2] << endl;
+
+	cout << "pos do focus = " << imageLayer->GetActiveCamera()->GetFocalPoint()[0] << ", "
+		<< imageLayer->GetActiveCamera()->GetFocalPoint()[1] << ", "
+		<< imageLayer->GetActiveCamera()->GetFocalPoint()[2] << endl;
+	if (isToLockReslice){
+		double distVec[] = { imageLayer->GetActiveCamera()->GetPosition()[0] - imageLayer->GetActiveCamera()->GetFocalPoint()[0],
+			imageLayer->GetActiveCamera()->GetPosition()[1] - imageLayer->GetActiveCamera()->GetFocalPoint()[1], 
+			imageLayer->GetActiveCamera()->GetPosition()[2] - imageLayer->GetActiveCamera()->GetFocalPoint()[2] };
+		double newCamFocus[] = { actor->GetPosition()[0], actor->GetPosition()[1], actor->GetPosition()[2], };
+		double newCamEye[] = { newCamFocus[0] + distVec[0], newCamFocus[1] + distVec[1], newCamFocus[2] + distVec[2] };
+		imageLayer->GetActiveCamera()->SetPosition(newCamEye);
+		imageLayer->GetActiveCamera()->SetFocalPoint(newCamFocus);
 		//actorDaImagem->SetPosition(actor->GetPosition());
 		return;
 	}
