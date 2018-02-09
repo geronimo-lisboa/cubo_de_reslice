@@ -1,7 +1,8 @@
 #pragma once
 #include "stdafx.h"
 #include "myOrientationCube.h"
-#include "myInteractorStyleTrackballActor.h"
+//#include "myInteractorStyleTrackballActor.h"
+#include "myInteractorStyleTrackballCamera.h"
 
 class SistemaCuboReslice {
 private:
@@ -10,7 +11,7 @@ private:
 	vtkSmartPointer<vtkWin32OpenGLRenderWindow> renderWindow;
 	vtkSmartPointer<myOrientationCube> cuboDeOrientacao;
 	vtkSmartPointer<vtkWin32RenderWindowInteractor> renderWindowInteractor;
-	vtkSmartPointer<myInteractorStyleTrackballActor> style;
+	vtkSmartPointer<myInteractorStyleTrackballCamera> style;
 	vtkSmartPointer<vtkImageImport> imagemImportadaPraVTK;
 	itk::Image<short, 3>::Pointer imagemOriginal;
 	FNCallbackDoDicomReslice callbackDeReslice;

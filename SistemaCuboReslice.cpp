@@ -42,7 +42,7 @@ void SistemaCuboReslice::CreateRenderer(HWND handle)
 	renderWindowInteractor->InstallMessageProcOn();
 	renderWindowInteractor->SetRenderWindow(renderWindow);
 
-	style = vtkSmartPointer<myInteractorStyleTrackballActor>::New();
+	style = vtkSmartPointer<myInteractorStyleTrackballCamera>::New();
 	renderWindowInteractor->SetInteractorStyle(style);
 }
 
@@ -73,7 +73,7 @@ void SistemaCuboReslice::SetImage(itk::Image<short, 3>::Pointer img)
 	cuboDeOrientacao->SetRenderers(rendererDaCamadaDaImagem, rendererDaCamadaDoCubo);
 	cuboDeOrientacao->SetImage(imagemImportadaPraVTK);
 	
-	style->SetWidgetContainerHandle(cuboDeOrientacao);
+	//style->SetWidgetContainerHandle(cuboDeOrientacao);
 	renderWindow->Render();
 	//Guarda os dados iniciais:
 	cuboDeOrientacao->SaveDataSnapshot();
@@ -160,5 +160,5 @@ void SistemaCuboReslice::Reset()
 
 void SistemaCuboReslice::SetOperacaoDeMouse(int qualBotao, int qualOperacao)
 {
-	style->SetOperacao(qualBotao, qualOperacao);
+	//style->SetOperacao(qualBotao, qualOperacao);
 }

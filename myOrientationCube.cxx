@@ -146,6 +146,7 @@ void myOrientationCube::CreatePipeline() {
 }
 
 void myOrientationCube::UpdateReslice() {
+	cout << __FUNCTION__ << endl;
 	if (!thickSlabReslice) {
 		CreatePipeline();
 	}
