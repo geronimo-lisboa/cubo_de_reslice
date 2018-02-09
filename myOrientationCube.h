@@ -40,6 +40,7 @@ private:
 	void DebugSave();
 	std::vector<DataSnapshot> dataSnapshots;
 	FNCallbackDoDicomReslice callbackDeReslice;
+	bool isToLockReslice;
 public:	
 	static myOrientationCube* New();
 	void SetRenderers(vtkRenderer* imageLayer, vtkRenderer* cubeLayer);
@@ -60,4 +61,7 @@ public:
 	DataSnapshot GetFirstState();
 	void SetState(DataSnapshot s);
 	void SetCallbackDeReslice(FNCallbackDoDicomReslice cbk);
+	void LockReslice(bool flag)override {
+		isToLockReslice = flag;
+	}
 };

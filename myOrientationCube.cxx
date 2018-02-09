@@ -95,6 +95,7 @@ myOrientationCube::myOrientationCube() {
 	alredyReset = nullptr;
 	alredyZoomed = nullptr;
 	callbackDeReslice = nullptr;
+	isToLockReslice = true;
 }
 
 void myOrientationCube::SetRenderers(vtkRenderer* imageLayer, vtkRenderer* cubeLayer) {
@@ -134,6 +135,7 @@ void myOrientationCube::MakeAxisFollowCube() {
 }
 
 void myOrientationCube::CreatePipeline() {
+	isToLockReslice = false;
 	//instancia o filtro
 	thickSlabReslice = vtkSmartPointer<vtkImageSlabReslice>::New();
 	//agora instancia o actor do reslice
@@ -149,6 +151,8 @@ void myOrientationCube::UpdateReslice() {
 	if (!thickSlabReslice) {
 		CreatePipeline();
 	}
+	if (isToLockReslice)
+		return;
 	thickSlabReslice->SetInputData(image->GetOutput());
 	// Set the default color the minimum scalar value
 	double range[2];
@@ -246,13 +250,14 @@ void myOrientationCube::Execute(vtkObject * caller, unsigned long ev, void * cal
 }
 
 void myOrientationCube::SetImage(vtkSmartPointer<vtkImageImport> imgSrc) {
+	isToLockReslice = false;
 	this->image = imgSrc;
 	assert(actor && axes2);
 	actor->SetPosition(image->GetOutput()->GetCenter());
 	MakeCameraFollowTranslation();
 	MakeAxisFollowCube();
-
-
+	UpdateReslice();
+	isToLockReslice = true;
 }
 
 void myOrientationCube::SetSlabThickness(double mm)

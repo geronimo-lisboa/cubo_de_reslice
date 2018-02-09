@@ -307,6 +307,7 @@ void myInteractorStyleTrackballActor::OnRightButtonUp()
 //----------------------------------------------------------------------------
 void myInteractorStyleTrackballActor::Rotate()
 {
+	cubeWidgetContainer->LockReslice(false);
 	if (this->CurrentRenderer == nullptr || this->InteractionProp == nullptr)
 	{
 		return;
@@ -407,6 +408,7 @@ void myInteractorStyleTrackballActor::Rotate()
 //----------------------------------------------------------------------------
 void myInteractorStyleTrackballActor::Spin()
 {
+	cubeWidgetContainer->LockReslice(false);
 	if (this->CurrentRenderer == nullptr || this->InteractionProp == nullptr)
 	{
 		return;
@@ -482,6 +484,7 @@ void myInteractorStyleTrackballActor::Spin()
 //----------------------------------------------------------------------------
 void myInteractorStyleTrackballActor::Pan()
 {
+	cubeWidgetContainer->LockReslice(true);
 	if (this->CurrentRenderer == nullptr || this->InteractionProp == nullptr)
 	{
 		return;
